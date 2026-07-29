@@ -128,7 +128,7 @@ PERSONAS: dict[str, Persona] = {
             Turn("Yes please, just the cable."),
         ),
         expectation=(
-            "Ask before acting, then refund 1500 cents for the cable "
+            "Ask before acting, then refund 3250 cents for the lamp shade "
             "only, not the full 8400."
         ),
     ),

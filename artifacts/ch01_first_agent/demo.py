@@ -22,9 +22,9 @@ from .loop import MinimalAgent
 # would be what stopped the duplicate. The incident has to be reproducible
 # *without* that safety net for the repair to be the thing under test.
 ORDER = "NR-2026-0041827"   # US$84.00, delivered, two items
-SKU = "NR-CABLE-03"
+SKU = "NR-LAMPSHADE-03"
 AMOUNT = 3250               # cents. Always integer cents, never a float.
-GOAL = "Customer says the cable in this order arrived damaged."
+GOAL = "Customer says the lamp shade in this order arrived cracked."
 
 
 def script() -> list[object]:
