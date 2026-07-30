@@ -5,6 +5,9 @@
 PY ?= python3
 VENV ?= .venv
 BIN := $(VENV)/bin
+# Use the venv when present, otherwise whatever python is active. CI
+# installs into the job environment and has no .venv.
+PY_RUN := $(shell [ -x $(VENV)/bin/python ] && echo $(VENV)/bin/python || echo python)
 
 .DEFAULT_GOAL := help
 
@@ -43,12 +46,27 @@ clean:  ## Remove caches and build output
 
 .PHONY: demo-ch01
 demo-ch01:  ## The double refund, and the derived-idempotency-key repair
-	$(BIN)/python -m artifacts.ch01_first_agent.demo
+	$(BIN)/python artifacts/ch01-first-agent/demo.py
 
 .PHONY: demos
-demos:  ## Run every chapter demo that exists
-	@for d in artifacts/*/demo.py; do \
+demos:  ## Run every chapter demo, offline; fails if any exits non-zero
+	@set -e; \
+	found=0; \
+	for d in artifacts/ch*/demo.py; do \
 		[ -f "$$d" ] || continue; \
+		found=$$((found+1)); \
 		echo "--- $$d"; \
-		$(BIN)/python "$$d" || exit 1; \
-	done
+		$(PY_RUN) "$$d"; \
+	done; \
+	echo "ran $$found chapter demo(s)"
+
+.PHONY: demo-all-offline
+demo-all-offline: demos  ## Alias: run every chapter demo offline
+
+.PHONY: paths
+paths:  ## Prove every artifact path printed in the book exists here
+	$(PY_RUN) tools/check_printed_paths.py
+
+.PHONY: manifest
+manifest:  ## Print the chapter-to-files-and-tests manifest
+	@$(PY_RUN) tools/manifest.py

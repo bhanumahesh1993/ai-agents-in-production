@@ -38,3 +38,23 @@ jobs:
         env:
           NORTHSTAR_MODEL: mock
         run: pytest -q
+
+      # An external audit found the book printing 28 artifact paths while this
+      # repository contained one directory. Every test passed throughout, so
+      # that class of defect needs its own check, run against the manuscript.
+      # The manuscript is not in this repository, so this step is skipped when
+      # it is absent and enforced when the book is checked out alongside.
+      - name: Printed paths exist
+        run: |
+          if [ -d ../manuscript ]; then
+            python tools/check_printed_paths.py ../manuscript
+          else
+            echo "manuscript not present; skipping printed-path check"
+          fi
+
+      # Every chapter demo must run offline and exit zero. This is what makes
+      # the book's "make demo-chNN" promise verifiable rather than aspirational.
+      - name: Every chapter demo runs offline
+        env:
+          NORTHSTAR_MODEL: mock
+        run: make demos

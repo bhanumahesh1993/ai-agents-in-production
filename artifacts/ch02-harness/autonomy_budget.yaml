@@ -1,0 +1,16 @@
+agent: northstar-support
+risk_tier: 2
+action_scope: [read, draft, mutate]     # no delete, no transfer
+resource_scope: {orders: requesting_customer_only}
+duration: {max_run_seconds: 900, max_idle_seconds: 300}
+step_budget: {max_turns: 12, max_tool_calls: 30, max_depth: 1}
+financial_budget:
+  model_cents_per_run: 200
+  transaction_cents_per_action: 5000    # above this, a human
+  transaction_cents_per_run: 15000
+data_budget: {max_records: 50, sensitivity: pii_low, egress: none}
+human_control:
+  automatic: [get_order, get_policy, search_orders]
+  sampled: [send_message]
+  approval_required: [issue_refund, escalate_to_specialist]
+blast_radius: {max_customers_per_run: 1}

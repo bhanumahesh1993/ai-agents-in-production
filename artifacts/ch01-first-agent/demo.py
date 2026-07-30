@@ -10,12 +10,18 @@ happens, so this doubles as a regression test on the fault injector.
 from __future__ import annotations
 
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import sys
 
 from northstar_contracts import ToolCall, World
 from northstar_runtime import FakeModel
 
-from . import tools_broken, tools_repaired
-from .loop import MinimalAgent
+import tools_broken
+import tools_repaired
+from loop import MinimalAgent
 
 # A partial refund on the larger order. This matters: a full refund would hit
 # the world's own over-refund guard, and the guard -- not the idempotency key --
