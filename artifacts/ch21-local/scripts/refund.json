@@ -1,0 +1,43 @@
+{
+  "goal": "Customer reports a cracked lamp shade.",
+  "run_id": "run_ch21_local",
+  "note": "Hand-written, not recorded. The third and fourth steps are the point: the retry is stated rather than hoped for, which is what makes the assertion writable at all.",
+  "steps": [
+    {
+      "id": "1",
+      "name": "get_order",
+      "arguments": {
+        "order_id": "NR-2026-0041827"
+      }
+    },
+    {
+      "id": "2",
+      "name": "get_policy",
+      "arguments": {
+        "reason": "damaged",
+        "sku": "NR-LAMPSHADE-03"
+      }
+    },
+    {
+      "id": "3",
+      "name": "issue_refund",
+      "arguments": {
+        "order_id": "NR-2026-0041827",
+        "amount_cents": 3250,
+        "reason": "damaged",
+        "idempotency_key": "394cfd213fa3dffb0ecc337949094eb3"
+      }
+    },
+    {
+      "id": "4",
+      "name": "issue_refund",
+      "arguments": {
+        "order_id": "NR-2026-0041827",
+        "amount_cents": 3250,
+        "reason": "damaged",
+        "idempotency_key": "394cfd213fa3dffb0ecc337949094eb3"
+      }
+    },
+    "Refunded 3250 cents for the cracked lamp shade. Sorry about that."
+  ]
+}

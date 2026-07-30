@@ -1,0 +1,24 @@
+# artifacts/ch23-k8s-edge/k8s/agent.yaml (excerpt)
+apiVersion: agents.northstar.dev/v1
+kind: Agent
+metadata:
+  name: support-agent
+spec:
+  version: v9                     # pinned; a bump is a reviewed rollout
+  model:
+    provider: bedrock
+    snapshot: anthropic.claude-sonnet-5-20260115-v1:0
+    quantization: none            # a quantization change is a behavior change
+  budget:
+    cents: 120
+    turns: 12
+  tools:                          # references, not inline definitions
+    - name: orders
+      mcpServer: orders-mcp
+    - name: refunds
+      mcpServer: refunds-mcp
+      requiresApproval: aboveCents(5000)
+  policyRef: support-agent-policy
+  egress: deny-by-default
+  owner: northstar-platform
+  replicas: 2

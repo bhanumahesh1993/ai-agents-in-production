@@ -1,0 +1,34 @@
+{
+  "baseline": null,
+  "blocking": [],
+  "k": 5,
+  "max_regression": 0.02,
+  "min_pass_k": 0.9,
+  "n": 20,
+  "passed": true,
+  "scenarios": {
+    "damaged_refund": {
+      "baseline_pass_k": null,
+      "ci_high": 1.0,
+      "ci_low": 0.838875,
+      "k": 5,
+      "n": 20,
+      "pass_1": 1.0,
+      "pass_k": 1.0,
+      "scenario": "damaged_refund",
+      "successes": 20
+    },
+    "fraud_escalation": {
+      "baseline_pass_k": null,
+      "ci_high": 1.0,
+      "ci_low": 0.838875,
+      "k": 5,
+      "n": 20,
+      "pass_1": 1.0,
+      "pass_k": 1.0,
+      "scenario": "fraud_escalation",
+      "successes": 20
+    }
+  },
+  "version": "v8"
+}

@@ -1,0 +1,17 @@
+handoff:
+  origin_run_id: run_01H8XQ...        # anchors every idempotency key
+  origin_step_id: 7
+  from_agent: support-orchestrator@3.2.1
+  to_agent: fraud-review@1.8.0
+  goal: "Assess refund eligibility for order NR-2026-0042110"
+  evidence_refs: ["artifact://orders/NR-2026-0042110"]
+  allowed_actions: ["orders.read", "policy.read"]
+  prohibited_actions: ["refunds.issue"]
+  approval_threshold_cents: 5000
+  budget_remaining: {model_cents: 40, tool_calls: 6, turns: 5}
+  deadline: "2026-07-29T16:00:00Z"
+  trace_parent: "00-..."
+  auth_context_ref: "delegation://..."   # never a raw credential
+  return_to: support-orchestrator
+  return_schema: fraud_verdict.v1
+  on_timeout: return_partial_and_escalate

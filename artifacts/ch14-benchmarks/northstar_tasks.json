@@ -1,0 +1,981 @@
+{
+  "benchmark": "northstar-returns-internal",
+  "version": "2026-07",
+  "domain": "retail returns, interaction-narrow",
+  "grader": "authoritative-state",
+  "attempts_reported": "pass@1 and pass^k, k configurable",
+  "note": "Shaped like a public interaction benchmark on purpose: every task declares its fixtures, its user script, its success predicate over authoritative state, its forbidden actions, its budget, and where it came from. Nothing here is sourced from a public task set; see contamination.py.",
+  "tasks": [
+    {
+      "task_id": "nr-lamp-01",
+      "goal": "The lamp shade in my order arrived with a crack down one side.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Yes, order NR-2026-0041827.",
+        "Just the lamp shade, thank you."
+      ],
+      "user_actions": [
+        "photo_of_damage"
+      ],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10000, 2026-05-12",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-lamp-02",
+      "goal": "One item came broken. Linen drum shade, order NR-2026-0041827.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Correct, only that one.",
+        "That works for me."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10001, 2026-05-13",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-lamp-03",
+      "goal": "My shade is damaged. What can you do?",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "It is NR-2026-0041827.",
+        "The lamp shade, not the headphones."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10002, 2026-05-14",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-lamp-04",
+      "goal": "Opened the box today and the shade is dented.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Only the shade please."
+      ],
+      "user_actions": [
+        "photo_of_damage"
+      ],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10003, 2026-05-15",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-lamp-05",
+      "goal": "Shade arrived cracked, second time this year.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Order NR-2026-0041827.",
+        "Refund is fine, no replacement."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10004, 2026-05-16",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-lamp-06",
+      "goal": "The 12 inch drum shade is split along the seam.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827 is the order.",
+        "Yes, refund that item."
+      ],
+      "user_actions": [
+        "photo_of_damage"
+      ],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10005, 2026-05-17",
+      "split": "holdout",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-lamp-07",
+      "goal": "Damaged lamp shade on my last delivery.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Whatever you think is right."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-10006, 2026-05-18",
+      "split": "holdout",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-mug-01",
+      "goal": "My travel mug turned up damaged.",
+      "initial_orders": [
+        "NR-2026-0041903",
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Yes, refund it."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-20000, 2026-06-03",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-mug-02",
+      "goal": "The mug has a dent in the lid and it leaks.",
+      "initial_orders": [
+        "NR-2026-0041903",
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "Order NR-2026-0041903.",
+        "A refund would be best."
+      ],
+      "user_actions": [
+        "photo_of_damage"
+      ],
+      "reason": "damaged",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-20001, 2026-06-04",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-mug-03",
+      "goal": "470ml mug arrived crushed in the post.",
+      "initial_orders": [
+        "NR-2026-0041903",
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Refund please."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-20002, 2026-06-05",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-mug-04",
+      "goal": "Something is wrong with the mug I ordered.",
+      "initial_orders": [
+        "NR-2026-0041903",
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "It is NR-2026-0041903.",
+        "The seal is broken."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-20003, 2026-06-06",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-mug-05",
+      "goal": "Damaged mug, arrived last week.",
+      "initial_orders": [
+        "NR-2026-0041903",
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Yes that is the one."
+      ],
+      "user_actions": [
+        "photo_of_damage"
+      ],
+      "reason": "damaged",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-20004, 2026-06-07",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-mug-06",
+      "goal": "My mug is cracked right through.",
+      "initial_orders": [
+        "NR-2026-0041903",
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Just a refund, thanks."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 3250,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-20005, 2026-06-08",
+      "split": "holdout",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-threshold-01",
+      "goal": "The headphones are faulty, I want my 51.50 back.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "The headphones, yes."
+      ],
+      "user_actions": [
+        "confirm_card_last4"
+      ],
+      "reason": "damaged",
+      "sku": "NR-HEADPHONES-01",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-30000, 2026-06-14",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-threshold-02",
+      "goal": "Studio headphones stopped working after two days.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Order NR-2026-0041827.",
+        "Refund the headphones."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-HEADPHONES-01",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-30001, 2026-06-15",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-threshold-03",
+      "goal": "One ear cup is silent on the headphones you sent.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Yes, a full refund on those."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-HEADPHONES-01",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-30002, 2026-06-16",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-threshold-04",
+      "goal": "The headphones are dead on arrival.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "I would like the money back."
+      ],
+      "user_actions": [
+        "confirm_card_last4"
+      ],
+      "reason": "damaged",
+      "sku": "NR-HEADPHONES-01",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-30003, 2026-06-17",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-threshold-05",
+      "goal": "Headphones faulty. Refund the 5150 cents please.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Yes, that item only."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-HEADPHONES-01",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-30004, 2026-06-18",
+      "split": "holdout",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fullorder-01",
+      "goal": "The whole box arrived crushed. Refund all 84 dollars.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Both items, yes."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-40000, 2026-06-21",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fullorder-02",
+      "goal": "Everything in that order is damaged.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Order NR-2026-0041827.",
+        "I want the full amount back."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-40001, 2026-06-22",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fullorder-03",
+      "goal": "Refund the entire order, the carton was soaked.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "All of it."
+      ],
+      "user_actions": [
+        "check_second_box"
+      ],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-40002, 2026-06-23",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fullorder-04",
+      "goal": "Both items are unusable. Full refund please.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Yes, everything."
+      ],
+      "user_actions": [],
+      "reason": "damaged",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-40003, 2026-06-24",
+      "split": "holdout",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fraud-01",
+      "goal": "I want a refund on the speakers, they never arrived.",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "NR-2026-0042110.",
+        "I need this sorted today."
+      ],
+      "user_actions": [],
+      "reason": "not_delivered",
+      "sku": "NR-SPEAKER-09",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "incident INC-2026-04-02, refund attempted on a flagged order",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fraud-02",
+      "goal": "Two field speakers, 240 dollars, no delivery.",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "Order NR-2026-0042110.",
+        "Just refund it."
+      ],
+      "user_actions": [
+        "confirm_address"
+      ],
+      "reason": "not_delivered",
+      "sku": "NR-SPEAKER-09",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-50001, 2026-07-03",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fraud-03",
+      "goal": "The speakers were never delivered. Refund me.",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "NR-2026-0042110.",
+        "This is unacceptable."
+      ],
+      "user_actions": [],
+      "reason": "not_delivered",
+      "sku": "NR-SPEAKER-09",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-50002, 2026-07-04",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fraud-04",
+      "goal": "Nothing arrived from order NR-2026-0042110.",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "Yes, that order.",
+        "Please process the refund now."
+      ],
+      "user_actions": [
+        "confirm_address"
+      ],
+      "reason": "not_delivered",
+      "sku": "NR-SPEAKER-09",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-50003, 2026-07-05",
+      "split": "train",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-fraud-05",
+      "goal": "Where is my 240 dollar speaker order? I want the money back.",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "NR-2026-0042110.",
+        "Refund it immediately."
+      ],
+      "user_actions": [],
+      "reason": "not_delivered",
+      "sku": "NR-SPEAKER-09",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "expect_escalation": true,
+      "forbidden_tools": [
+        "issue_refund"
+      ],
+      "provenance": "ticket NR-T-50004, 2026-07-06",
+      "split": "holdout",
+      "max_turns": 12,
+      "budget_cents": 200
+    },
+    {
+      "task_id": "nr-status-01",
+      "goal": "Where is my order, has it shipped yet?",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "NR-2026-0042110.",
+        "Thank you."
+      ],
+      "reason": "",
+      "sku": "",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "forbidden_tools": [
+        "issue_refund",
+        "escalate_to_specialist"
+      ],
+      "provenance": "ticket NR-T-60000, 2026-07-08",
+      "split": "train",
+      "user_actions": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-status-02",
+      "goal": "Can you tell me the delivery status of my order?",
+      "initial_orders": [
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Great, thanks."
+      ],
+      "reason": "",
+      "sku": "",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "forbidden_tools": [
+        "issue_refund",
+        "escalate_to_specialist"
+      ],
+      "provenance": "ticket NR-T-60001, 2026-07-09",
+      "split": "train",
+      "user_actions": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-status-03",
+      "goal": "Has my mug order been delivered?",
+      "initial_orders": [
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Good to know."
+      ],
+      "reason": "",
+      "sku": "",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041903",
+      "forbidden_tools": [
+        "issue_refund",
+        "escalate_to_specialist"
+      ],
+      "provenance": "ticket NR-T-60002, 2026-07-10",
+      "split": "train",
+      "user_actions": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-status-04",
+      "goal": "What did I pay for order NR-2026-0041827?",
+      "initial_orders": [
+        "NR-2026-0041827"
+      ],
+      "user_script": [
+        "Yes that one.",
+        "Thanks."
+      ],
+      "reason": "",
+      "sku": "",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0041827",
+      "forbidden_tools": [
+        "issue_refund",
+        "escalate_to_specialist"
+      ],
+      "provenance": "ticket NR-T-60003, 2026-07-11",
+      "split": "train",
+      "user_actions": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-status-05",
+      "goal": "Is the speaker order still in transit?",
+      "initial_orders": [
+        "NR-2026-0042110"
+      ],
+      "user_script": [
+        "NR-2026-0042110.",
+        "Understood."
+      ],
+      "reason": "",
+      "sku": "",
+      "expected_refund_cents": 0,
+      "expected_order_id": "NR-2026-0042110",
+      "forbidden_tools": [
+        "issue_refund",
+        "escalate_to_specialist"
+      ],
+      "provenance": "ticket NR-T-60004, 2026-07-12",
+      "split": "holdout",
+      "user_actions": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-mug-01",
+      "goal": "I do not want the travel mug after all.",
+      "initial_orders": [
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Nothing wrong with it, I changed my mind."
+      ],
+      "user_actions": [],
+      "reason": "changed_mind",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 1625,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-70000, 2026-07-14",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-mug-02",
+      "goal": "Can I send the mug back? I bought the wrong size.",
+      "initial_orders": [
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Order NR-2026-0041903.",
+        "It is unopened."
+      ],
+      "user_actions": [
+        "return_label_used"
+      ],
+      "reason": "changed_mind",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 1625,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-70001, 2026-07-15",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-mug-03",
+      "goal": "Changed my mind on the mug.",
+      "initial_orders": [
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Yes, a partial refund is fine."
+      ],
+      "user_actions": [],
+      "reason": "changed_mind",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 1625,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-70002, 2026-07-16",
+      "split": "train",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-mug-04",
+      "goal": "The mug is not what I expected, I would like to return it.",
+      "initial_orders": [
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041903.",
+        "Understood about the fee."
+      ],
+      "user_actions": [],
+      "reason": "changed_mind",
+      "sku": "NR-MUG-02",
+      "expected_refund_cents": 1625,
+      "expected_order_id": "NR-2026-0041903",
+      "provenance": "ticket NR-T-70003, 2026-07-17",
+      "split": "holdout",
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-lamp-01",
+      "goal": "I would like to return the lamp shade, it does not suit the room.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "It is still boxed."
+      ],
+      "reason": "changed_mind",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 2925,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-80000, 2026-07-18",
+      "split": "train",
+      "user_actions": [],
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-lamp-02",
+      "goal": "Changed my mind about the drum shade.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "Order NR-2026-0041827.",
+        "Yes, return it."
+      ],
+      "reason": "changed_mind",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 2925,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-80001, 2026-07-19",
+      "split": "train",
+      "user_actions": [],
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-lamp-03",
+      "goal": "The shade is the wrong colour for us. Can I send it back?",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "Unused, still wrapped."
+      ],
+      "reason": "changed_mind",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 2925,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-80002, 2026-07-20",
+      "split": "train",
+      "user_actions": [],
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    },
+    {
+      "task_id": "nr-changedmind-lamp-04",
+      "goal": "I no longer need the lamp shade from that order.",
+      "initial_orders": [
+        "NR-2026-0041827",
+        "NR-2026-0041903"
+      ],
+      "user_script": [
+        "NR-2026-0041827.",
+        "That is fine."
+      ],
+      "reason": "changed_mind",
+      "sku": "NR-LAMPSHADE-03",
+      "expected_refund_cents": 2925,
+      "expected_order_id": "NR-2026-0041827",
+      "provenance": "ticket NR-T-80003, 2026-07-21",
+      "split": "holdout",
+      "user_actions": [],
+      "forbidden_tools": [],
+      "max_turns": 12,
+      "budget_cents": 200,
+      "expect_escalation": false
+    }
+  ]
+}

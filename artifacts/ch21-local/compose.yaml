@@ -1,0 +1,80 @@
+# artifacts/ch21-local/compose.yaml
+#
+# The local reference stack: nine services, one command.
+#
+#   make local-up      build, start, migrate, seed, wait for health
+#   make demo-ch21     the damaged-item task with a timeout injected
+#
+# Each service stands in for a production component, so that moving to a
+# cloud in Chapter 22 is a substitution rather than a rewrite. No
+# credentials are read at any point: MODEL_MODE defaults to mock.
+#
+# Every image is a digest-pinned variable resolved from .env. A floating
+# tag is a dependency you did not choose, arriving on a day you did not
+# pick. See .env.example, and VERSIONS.md for this edition's pins.
+#
+# This is a development and testing topology. It has no high availability,
+# no rolling restarts, and no pod-level isolation. That is deliberate:
+# Chapters 22 and 23 are where the stack grows the properties it lacks.
+services:
+  agent:
+    build: .
+    command: northstar-api --host 0.0.0.0 --port 8000
+    environment:
+      MODEL_MODE: mock            # no credentials required
+      DATABASE_URL: postgresql://northstar@postgres/northstar
+      REDIS_URL: redis://redis:6379/0
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4317
+      MCP_GATEWAY_URL: http://gateway:8080/mcp
+      NORTHSTAR_RUN_SEED: "20260730"
+    ports: ["8000:8000"]
+    depends_on: [postgres, redis, collector, gateway]
+  worker:
+    build: .
+    command: northstar-worker --queue runs
+    environment:
+      MODEL_MODE: mock
+      DATABASE_URL: postgresql://northstar@postgres/northstar
+      REDIS_URL: redis://redis:6379/0
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4317
+      MCP_GATEWAY_URL: http://gateway:8080/mcp
+    depends_on: [postgres, redis]
+  postgres:
+    image: ${POSTGRES_IMAGE}      # digest pinned in .env
+    environment:
+      POSTGRES_USER: northstar
+      POSTGRES_DB: northstar
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes: ["northstar-pgdata:/var/lib/postgresql/data"]
+  redis:
+    image: ${REDIS_IMAGE}
+    command: redis-server --save 60 1
+  gateway:
+    build: ./gateway              # local MCP server, stdio + HTTP
+    command: northstar-mcp --http 0.0.0.0:8080
+    environment:
+      NORTHSTAR_POLICY_BUNDLE: default
+      NORTHSTAR_PRINCIPAL: agent:northstar-support-agent
+    depends_on: [postgres]
+  model:
+    image: ${LOCAL_MODEL_IMAGE}   # optional; MODEL_MODE=live uses it
+    profiles: [local-model]
+    environment:
+      NORTHSTAR_MODEL_NAME: ${LOCAL_MODEL_NAME}
+  collector:
+    image: ${OTEL_COLLECTOR_IMAGE}
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes: ["./otel:/etc/otel:ro"]
+    depends_on: [traces]
+  traces:
+    image: ${TRACE_STORE_IMAGE}   # self-hosted; nothing leaves the laptop
+    ports: ["6006:6006"]
+  approvals:
+    build: .
+    command: northstar-approvals --host 0.0.0.0 --port 8010
+    environment:
+      DATABASE_URL: postgresql://northstar@postgres/northstar
+    ports: ["8010:8010"]
+    depends_on: [postgres]
+volumes:
+  northstar-pgdata: {}

@@ -23,7 +23,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-from northstar_contracts import EventLog, ToolSpec, World
+from northstar_contracts import EventLog, ToolSpec, World, idempotency_key
 
 __all__ = [
     "PINNED_HEADER",
@@ -89,7 +89,17 @@ def ledger_events(log: EventLog) -> list[dict[str, Any]]:
             continue
         if payload.get("tool") not in WRITE_TOOLS:
             continue
-        args = arguments.get(str(payload.get("call_id")), {})
+        call_id = str(payload.get("call_id"))
+        args = arguments.get(call_id, {})
+        fields = {k: args.get(k) for k in _VERBATIM_ARGS}
+        if not fields["idempotency_key"]:
+            # The registry stamps the key at dispatch, after the intent
+            # record was written, so the log often has no key to read.
+            # Recompute it the same way the registry did rather than
+            # printing ``None``: the key is derived, so it can be.
+            fields["idempotency_key"] = idempotency_key(
+                record["run_id"], f"{record['step']}:{call_id}"
+            )
         out.append(
             {
                 "type": "tool.result",
@@ -97,7 +107,7 @@ def ledger_events(log: EventLog) -> list[dict[str, Any]]:
                 "payload": {
                     "name": payload["tool"],
                     "ok": bool(payload["ok"]),
-                    **{k: args.get(k) for k in _VERBATIM_ARGS},
+                    **fields,
                 },
             }
         )

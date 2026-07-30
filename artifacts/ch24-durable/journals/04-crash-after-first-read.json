@@ -1,0 +1,52 @@
+{
+  "amount_cents": 3250,
+  "note": "Died after the first read. An incomplete journal: replay reproduces the state at the moment the worker went away, which is the first question in any incident.",
+  "order_id": "NR-2026-0041827",
+  "records": [
+    {
+      "payload": {
+        "args": [
+          "NR-2026-0041827"
+        ],
+        "step_id": "get_order"
+      },
+      "run_id": "run_01HQ8ZK6Q4",
+      "seq": 0,
+      "type": "step.started"
+    },
+    {
+      "payload": {
+        "result": {
+          "currency": "USD",
+          "customer_id": "CUST-8841",
+          "flags": [],
+          "items": [
+            {
+              "name": "Northstar Studio Headphones",
+              "quantity": 1,
+              "sku": "NR-HEADPHONES-01",
+              "unit_price_cents": 5150
+            },
+            {
+              "name": "Linen Drum Lamp Shade, 12in",
+              "quantity": 1,
+              "sku": "NR-LAMPSHADE-03",
+              "unit_price_cents": 3250
+            }
+          ],
+          "order_id": "NR-2026-0041827",
+          "placed_at": "2026-07-11",
+          "refundable_cents": 8400,
+          "refunded_cents": 0,
+          "status": "delivered",
+          "total_cents": 8400
+        },
+        "step_id": "get_order"
+      },
+      "run_id": "run_01HQ8ZK6Q4",
+      "seq": 1,
+      "type": "step.completed"
+    }
+  ],
+  "run_id": "run_01HQ8ZK6Q4"
+}

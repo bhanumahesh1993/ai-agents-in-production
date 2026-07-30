@@ -1,0 +1,100 @@
+{
+  "case_id": "refund-exactly-at-threshold-07",
+  "run_id": "eval-refund-exactly-at-threshold-07",
+  "config_hash": "f1f36c35b4e3e3878303bf3220ffbedd3921195a0c790768a93fa955128c461a",
+  "responses": [
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c1",
+          "name": "get_order",
+          "arguments": {
+            "order_id": "NR-2026-0041827"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c2",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "damaged"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c3",
+          "name": "escalate_to_specialist",
+          "arguments": {
+            "order_id": "NR-2026-0041827",
+            "reason": "damaged",
+            "notes": "claim is 5000c, at threshold"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c4",
+          "name": "send_message",
+          "arguments": {
+            "order_id": "NR-2026-0041827",
+            "body": "A specialist is reviewing this and will be in touch."
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": "A colleague is picking this up; I have not moved any money.",
+      "tool_calls": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "observations": [
+    {
+      "tool": "get_order",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": true
+    },
+    {
+      "tool": "escalate_to_specialist",
+      "ok": true
+    },
+    {
+      "tool": "send_message",
+      "ok": true
+    }
+  ]
+}

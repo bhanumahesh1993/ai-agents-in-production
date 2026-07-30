@@ -1,0 +1,45 @@
+# artifacts/ch23-k8s-edge/k8s/crd.yaml
+#
+# The custom resource definition. An agent becomes a YAML object versioned
+# in Git, reviewed in a pull request, and rolled out with the tooling the
+# platform team already operates.
+#
+# Four properties follow, and they are the actual argument for this
+# approach: declarative version pinning, GitOps rollout for behavior,
+# per-agent policy and egress, and fleet operations as API queries. The
+# cost is equally concrete: you own the reconciliation logic's failure
+# modes and the upgrade path when this definition changes shape.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: agents.agents.northstar.dev
+spec:
+  group: agents.northstar.dev
+  scope: Namespaced
+  names:
+    kind: Agent
+    plural: agents
+    singular: agent
+    shortNames: [ag]
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      required:
+        - version
+        - model
+        - budget
+        - tools
+        - policyRef
+        - egress
+      properties:
+        version: string
+        model: object
+        budget: object
+        tools: array
+        policyRef: string
+        egress: string
+        owner: string
+        replicas: integer

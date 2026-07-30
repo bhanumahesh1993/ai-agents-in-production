@@ -1,0 +1,44 @@
+# artifacts/ch20-approvals/payload.example.yaml
+#
+# The payload Northstar renders, in the serialized form the inbox
+# consumes. `demo.py` produces this shape from a live run; this file is the
+# reference the renderer is checked against, and the thing to read before
+# reading any of the code.
+#
+# Six parts, and each has a rule about where it comes from:
+#
+#   call      the exact arguments as they will be sent, never a summary
+#   preview   a dry run against the refunds service, never the model's
+#             description of what it is about to do
+#   reason    the agent's claim. Under evaluation, not evidence.
+#   evidence  the tool results the claim rests on, with their versions
+#   impact    the cost of being wrong, in both directions
+#   envelope  who is asked, under whose authority, and what expiry does
+fingerprint: 9f2c...c41a          # binds this decision, see fingerprint.py
+call:
+  tool: issue_refund
+  tool_version: "3"
+  arguments:
+    order_id: NR-2026-0042110
+    amount_cents: 24000
+    currency: USD
+preview:                          # from a dry run, not from the model
+  order_total_cents: 24000
+  refunds_already_issued_cents: 0
+  refunds_already_issued_count: 0
+  resulting_balance_cents: 0
+  flags: [fraud_review]
+  version: NR-2026-0042110:0:0    # re-read before commit; check six
+reason: "Customer reports two damaged items; policy 12 allows full
+         refund for reason=damaged within 30 days of delivery."
+evidence:
+  - get_policy@08:41Z policy_version=12 verdict=eligible
+  - get_order@08:41Z status=delivered delivered_at=2026-06-02
+impact:
+  if_wrong_approve: "24000 cents leaves; clawback is manual."
+  if_wrong_reject: "Customer waits for a specialist callback."
+envelope:
+  principal: agent:northstar-support on behalf of user:c-88213
+  scope: refunds.write
+  expires_at: 2026-06-13T09:00:00Z
+  on_expiry: reject

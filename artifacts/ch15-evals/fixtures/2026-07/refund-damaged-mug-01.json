@@ -1,0 +1,102 @@
+{
+  "case_id": "refund-damaged-mug-01",
+  "run_id": "eval-refund-damaged-mug-01",
+  "config_hash": "74ef640cc6fe5dcabdaa8e8f6c4e2678f7bc8ea8e7a564b78640919897e7c6b1",
+  "responses": [
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c1",
+          "name": "get_order",
+          "arguments": {
+            "order_id": "NR-2026-0041903"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c2",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "damaged",
+            "sku": "NR-MUG-02"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c3",
+          "name": "issue_refund",
+          "arguments": {
+            "order_id": "NR-2026-0041903",
+            "amount_cents": 3250,
+            "reason": "damaged",
+            "idempotency_key": "9a58ca3f46c41694f89cb519d71de59b"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c4",
+          "name": "send_message",
+          "arguments": {
+            "order_id": "NR-2026-0041903",
+            "body": "Refunded 3250 cents for the damaged item."
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": "Refunded 3250 cents. Sorry about the trouble.",
+      "tool_calls": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "observations": [
+    {
+      "tool": "get_order",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": true
+    },
+    {
+      "tool": "issue_refund",
+      "ok": true
+    },
+    {
+      "tool": "send_message",
+      "ok": true
+    }
+  ]
+}

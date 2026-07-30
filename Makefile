@@ -48,6 +48,50 @@ clean:  ## Remove caches and build output
 demo-ch01:  ## The double refund, and the derived-idempotency-key repair
 	$(BIN)/python artifacts/ch01-first-agent/demo.py
 
+.PHONY: demo-ch02
+demo-ch02:  ## Checkpoint placement, a killed worker, and a clean resume
+	$(BIN)/python artifacts/ch02-harness/demo.py
+
+.PHONY: demo-ch03
+demo-ch03:  ## One triage agent three ways, and the seven-criteria scorecard
+	$(BIN)/python artifacts/ch03-three-ways/demo.py
+
+.PHONY: demo-ch04
+demo-ch04:  ## Six reasoning patterns, one task, measured cost
+	$(BIN)/python artifacts/ch04-patterns/demo.py
+
+.PHONY: demo-ch05
+demo-ch05:  ## Isolated readers, then two writers who disagree
+	$(BIN)/python artifacts/ch05-orchestrator/demo.py
+
+.PHONY: demo-ch06
+demo-ch06:  ## Supervisor versus swarm, and the handoff that pays twice
+	$(BIN)/python artifacts/ch06-topologies/demo.py
+
+.PHONY: demo-ch25
+demo-ch25:  ## Budgets, a tenant-scoped cache, and a router priced per success
+	$(PY_RUN) artifacts/ch25-cost/demo.py
+
+.PHONY: demo-ch26
+demo-ch26:  ## The release gates, the shadow diff, the canary, and the drill
+	$(PY_RUN) artifacts/ch26-cicd/demo.py
+
+.PHONY: demo-ch27
+demo-ch27:  ## Validate trend-tracker.md, the dated claims file
+	$(PY_RUN) artifacts/ch27-trends/demo.py
+
+# ARGS is passed through, so `make demo-ch28 ARGS="--grade --drift 0.2"`
+# works as well as the dedicated grade target below.
+ARGS ?=
+
+.PHONY: demo-ch28
+demo-ch28:  ## The capstone: four Northstar cases, end to end
+	$(PY_RUN) artifacts/ch28-capstone/demo.py $(ARGS)
+
+.PHONY: demo-ch28-grade
+demo-ch28-grade:  ## The capstone's pass^k report with confidence intervals
+	$(PY_RUN) artifacts/ch28-capstone/demo.py --grade
+
 .PHONY: demos
 demos:  ## Run every chapter demo, offline; fails if any exits non-zero
 	@set -e; \

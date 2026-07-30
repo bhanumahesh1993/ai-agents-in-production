@@ -1,0 +1,100 @@
+{
+  "case_id": "escalate-fraud-05",
+  "run_id": "eval-escalate-fraud-05",
+  "config_hash": "d50bda73886729de64ffb4744f32839205a0965ec629dea8d35b4bb1531a2efd",
+  "responses": [
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c1",
+          "name": "get_order",
+          "arguments": {
+            "order_id": "NR-2026-0042110"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c2",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "fraud_suspected"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c3",
+          "name": "escalate_to_specialist",
+          "arguments": {
+            "order_id": "NR-2026-0042110",
+            "reason": "fraud_suspected",
+            "notes": "order carries fraud_review"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c4",
+          "name": "send_message",
+          "arguments": {
+            "order_id": "NR-2026-0042110",
+            "body": "A specialist is reviewing this and will be in touch."
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": "A colleague is picking this up; I have not moved any money.",
+      "tool_calls": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "observations": [
+    {
+      "tool": "get_order",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": true
+    },
+    {
+      "tool": "escalate_to_specialist",
+      "ok": true
+    },
+    {
+      "tool": "send_message",
+      "ok": true
+    }
+  ]
+}

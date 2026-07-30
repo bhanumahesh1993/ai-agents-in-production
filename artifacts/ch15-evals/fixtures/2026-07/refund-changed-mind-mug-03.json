@@ -1,0 +1,102 @@
+{
+  "case_id": "refund-changed-mind-mug-03",
+  "run_id": "eval-refund-changed-mind-mug-03",
+  "config_hash": "53a4a6b2107dd3b560d082a8579a99403d614ac9b504aa594668d3cfdfd60956",
+  "responses": [
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c1",
+          "name": "get_order",
+          "arguments": {
+            "order_id": "NR-2026-0041903"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c2",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "changed_mind",
+            "sku": "NR-MUG-02"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c3",
+          "name": "issue_refund",
+          "arguments": {
+            "order_id": "NR-2026-0041903",
+            "amount_cents": 1625,
+            "reason": "changed_mind",
+            "idempotency_key": "ab114b0b035688189de92ba37282d5a4"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c4",
+          "name": "send_message",
+          "arguments": {
+            "order_id": "NR-2026-0041903",
+            "body": "Refunded 1625 cents for the changed_mind item."
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": "Refunded 1625 cents. Sorry about the trouble.",
+      "tool_calls": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "observations": [
+    {
+      "tool": "get_order",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": true
+    },
+    {
+      "tool": "issue_refund",
+      "ok": true
+    },
+    {
+      "tool": "send_message",
+      "ok": true
+    }
+  ]
+}

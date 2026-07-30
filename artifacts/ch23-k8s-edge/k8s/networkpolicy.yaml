@@ -1,0 +1,36 @@
+# artifacts/ch23-k8s-edge/k8s/networkpolicy.yaml
+#
+# Derived by the controller from `spec.egress: deny-by-default`, and shown
+# here so a reviewer can read what the controller writes.
+#
+# This is the single highest-value control in the chapter. An agent will
+# fetch a URL a customer put in a support ticket, which is the entire point
+# and also the vulnerability. A namespace-default-allow mesh turns that
+# into the exfiltration path. Per-agent deny-by-default with an explicit
+# allowlist, and a separate, stricter policy for the sandbox pool.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: support-agent-egress
+spec:
+  podSelector:
+    matchLabels:
+      agents.northstar.dev/name: support-agent
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: orders-mcp
+    - to:
+        - podSelector:
+            matchLabels:
+              app: refunds-mcp
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+    - to:
+        - podSelector:
+            matchLabels:
+              app: otel-collector

@@ -1,0 +1,125 @@
+{
+  "amount_cents": 3250,
+  "note": "A run that completed on its first attempt. Replays to succeeded, executes nothing.",
+  "order_id": "NR-2026-0041827",
+  "records": [
+    {
+      "payload": {
+        "args": [
+          "NR-2026-0041827"
+        ],
+        "step_id": "get_order"
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 0,
+      "type": "step.started"
+    },
+    {
+      "payload": {
+        "result": {
+          "currency": "USD",
+          "customer_id": "CUST-8841",
+          "flags": [],
+          "items": [
+            {
+              "name": "Northstar Studio Headphones",
+              "quantity": 1,
+              "sku": "NR-HEADPHONES-01",
+              "unit_price_cents": 5150
+            },
+            {
+              "name": "Linen Drum Lamp Shade, 12in",
+              "quantity": 1,
+              "sku": "NR-LAMPSHADE-03",
+              "unit_price_cents": 3250
+            }
+          ],
+          "order_id": "NR-2026-0041827",
+          "placed_at": "2026-07-11",
+          "refundable_cents": 8400,
+          "refunded_cents": 0,
+          "status": "delivered",
+          "total_cents": 8400
+        },
+        "step_id": "get_order"
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 1,
+      "type": "step.completed"
+    },
+    {
+      "payload": {
+        "args": [
+          "damaged"
+        ],
+        "step_id": "get_policy"
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 2,
+      "type": "step.started"
+    },
+    {
+      "payload": {
+        "result": {
+          "approval_threshold_cents": 5000,
+          "currency": "USD",
+          "policy_version": "2026-07-01",
+          "rules": [
+            {
+              "eligible": true,
+              "notes": "Photo evidence requested but not blocking under 5000c.",
+              "reason": "damaged",
+              "refund_pct": 100,
+              "requires_evidence": true,
+              "window_days": 30
+            }
+          ]
+        },
+        "step_id": "get_policy"
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 3,
+      "type": "step.completed"
+    },
+    {
+      "payload": {
+        "now": 1785312004.0
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 4,
+      "type": "clock.read"
+    },
+    {
+      "payload": {
+        "args": [
+          "NR-2026-0041827",
+          3250,
+          "damaged",
+          "2af4c8f0202bba650acbd3acd2fdbe83"
+        ],
+        "step_id": "issue_refund"
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 5,
+      "type": "step.started"
+    },
+    {
+      "payload": {
+        "result": {
+          "amount_cents": 3250,
+          "created_at": 1785398995.631773,
+          "currency": "USD",
+          "duplicate": false,
+          "order_id": "NR-2026-0041827",
+          "reason": "damaged",
+          "refund_id": "RFND-00001"
+        },
+        "step_id": "issue_refund"
+      },
+      "run_id": "run_01HQ8ZK3M7",
+      "seq": 6,
+      "type": "step.completed"
+    }
+  ],
+  "run_id": "run_01HQ8ZK3M7"
+}

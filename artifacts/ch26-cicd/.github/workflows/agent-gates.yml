@@ -1,0 +1,70 @@
+# The release gates, as a CI workflow.
+#
+# This file lives inside the chapter artifact rather than at the repository
+# root because it is an example to copy, not this repository's own CI. Move
+# it to .github/workflows/ in your project and drop the working-directory.
+#
+# Both gates block on regression against a stored baseline rather than on an
+# absolute score, and both run offline: no API key, no network, no provider
+# SDK. That is what makes them cheap enough to run on every commit.
+
+name: agent gates
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: artifacts/ch26-cicd
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        working-directory: .
+        run: pip install -e ".[dev]"
+
+      - name: Reliability gate (pass^k)
+        run: |
+          python -m gates.reliability \
+            --scenarios critical --k 5 --min-pass-k 0.90 \
+            --baseline baselines/main.json --max-regression 0.02
+
+      - name: Trajectory gate
+        run: |
+          python -m gates.trajectory \
+            --forbid "issue_refund before get_policy" \
+            --forbid "issue_refund without idempotency_key" \
+            --require-state-grader
+
+      # The gates above judge the candidate. This one proves the pipeline
+      # still catches a known-bad one, so a gate that has quietly stopped
+      # working fails the build instead of passing it.
+      - name: Gates still block a known-bad candidate
+        run: |
+          ! python -m gates.reliability \
+              --scenarios critical --k 5 --min-pass-k 0.90 \
+              --baseline baselines/main.json --max-regression 0.02 \
+              --version v9-regressed
+          ! python -m gates.trajectory \
+              --forbid "issue_refund before get_policy" \
+              --forbid "issue_refund without idempotency_key" \
+              --require-state-grader --version v9-unsafe
+
+      - name: Kill-switch drill
+        run: python demo.py
+
+      - name: Upload gate reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-gate-reports
+          path: artifacts/ch26-cicd/baselines/

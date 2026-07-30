@@ -1,0 +1,122 @@
+{
+  "case_id": "two-problems-one-message-08",
+  "run_id": "eval-two-problems-one-message-08",
+  "config_hash": "e3e5c494825370cad5d1126064b91bc2d8f986e4496695eaa2483bd54c09e665",
+  "responses": [
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c1",
+          "name": "get_order",
+          "arguments": {
+            "order_id": "NR-2026-0041827"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c2",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "damaged",
+            "sku": "NR-LAMPSHADE-03"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c3",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "not_delivered"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c4",
+          "name": "issue_refund",
+          "arguments": {
+            "order_id": "NR-2026-0041827",
+            "amount_cents": 3250,
+            "reason": "damaged",
+            "idempotency_key": "aa4f2f996589e51c193198547bfe67a9"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c5",
+          "name": "send_message",
+          "arguments": {
+            "order_id": "NR-2026-0041827",
+            "body": "Refunded the shade. The second item is still in transit; I have not refunded that one."
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": "Handled the damaged item and explained the second separately.",
+      "tool_calls": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "observations": [
+    {
+      "tool": "get_order",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": true
+    },
+    {
+      "tool": "issue_refund",
+      "ok": true
+    },
+    {
+      "tool": "send_message",
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "case_id": "policy-unavailable-09",
+  "run_id": "eval-policy-unavailable-09",
+  "config_hash": "b7806a3f8a835a811f38f51b9113d93c05a18d94d5e588d33f919030315f611e",
+  "responses": [
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c1",
+          "name": "get_order",
+          "arguments": {
+            "order_id": "NR-2026-0041827"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c2",
+          "name": "get_policy",
+          "arguments": {
+            "reason": "damaged",
+            "sku": "NR-LAMPSHADE-03"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c3",
+          "name": "escalate_to_specialist",
+          "arguments": {
+            "order_id": "NR-2026-0041827",
+            "reason": "policy_unavailable",
+            "notes": "rule service returned an error twice"
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": null,
+      "tool_calls": [
+        {
+          "id": "c4",
+          "name": "send_message",
+          "arguments": {
+            "order_id": "NR-2026-0041827",
+            "body": "I could not reach the rules, so a colleague will."
+          }
+        }
+      ],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "tool_use"
+    },
+    {
+      "text": "Could not read the policy, so I escalated instead of guessing.",
+      "tool_calls": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "model": "replay",
+      "stop_reason": "end_turn"
+    }
+  ],
+  "observations": [
+    {
+      "tool": "get_order",
+      "ok": true
+    },
+    {
+      "tool": "get_policy",
+      "ok": false
+    },
+    {
+      "tool": "get_policy",
+      "ok": false
+    },
+    {
+      "tool": "escalate_to_specialist",
+      "ok": true
+    },
+    {
+      "tool": "send_message",
+      "ok": true
+    }
+  ]
+}

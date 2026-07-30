@@ -7,14 +7,15 @@ in the token, and the integer amount in the call.
 
 The default is ``DENY``. That is the correct default for a decision point
 in front of money, and it is why :func:`gateway_policy` has to say
-explicitly which tools are reads — a deny-by-default engine with no allow
-rule blocks ``get_order`` too.
+explicitly what is permitted — a deny-by-default engine with no allow rule
+blocks ``get_order`` too, and it blocks the refund this chapter is about.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
+from northstar_contracts import ToolCall
 from northstar_policy import (
     Decision,
     Principal,
@@ -23,12 +24,12 @@ from northstar_policy import (
     amount_at_or_above,
     require_scope,
 )
-from northstar_contracts import ToolCall
 
 __all__ = [
     "APPROVAL_THRESHOLD_CENTS",
     "READ_TOOLS",
     "allow_reads",
+    "allow_refund_in_scope",
     "gateway_policy",
     "policy",
 ]
@@ -71,6 +72,40 @@ def allow_reads(tools: frozenset[str] = READ_TOOLS) -> Rule:
     )
 
 
+def allow_refund_in_scope(
+    threshold_cents: int = APPROVAL_THRESHOLD_CENTS,
+) -> Rule:
+    """Allow a refund that holds the scope and sits under the threshold.
+
+    This rule goes *last*, so both of :data:`policy`'s rules refuse first.
+    Written the other way round — an allow rule ahead of the scope check —
+    the engine would authorise a refund for a principal holding nothing.
+    A deny-by-default engine is supposed to make that impossible, and a
+    first-match-wins rule list reintroduces it the moment the order is
+    wrong, which is why the order is asserted in the test suite.
+    """
+
+    def when(p: Principal, c: ToolCall, ctx: dict[str, Any]) -> bool:
+        amount = c.arguments.get("amount_cents")
+        return (
+            c.name == "issue_refund"
+            and p.has("refunds.write")
+            and isinstance(amount, int)
+            and not isinstance(amount, bool)
+            and amount < threshold_cents
+        )
+
+    return Rule(
+        name="issue_refund.within_autonomy",
+        when=when,
+        decision=Decision.ALLOW,
+        reason=(
+            f"refund is under the {threshold_cents}c threshold and the "
+            f"principal holds refunds.write"
+        ),
+    )
+
+
 def gateway_policy() -> RulesPolicyEngine:
     """The bundle the enforcement point evaluates.
 
@@ -79,7 +114,7 @@ def gateway_policy() -> RulesPolicyEngine:
     refund threshold and the required scope are written down.
     """
     return RulesPolicyEngine(
-        rules=[allow_reads(), *policy.rules],
+        rules=[allow_reads(), *policy.rules, allow_refund_in_scope()],
         default=Decision.DENY,
         default_reason="no rule matched; writes deny by default",
     )

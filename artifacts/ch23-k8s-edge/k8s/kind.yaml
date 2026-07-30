@@ -1,0 +1,25 @@
+# artifacts/ch23-k8s-edge/k8s/kind.yaml
+#
+# `make kind-up` creates this cluster, installs the CRD, and runs the
+# controller. Three node roles because agents want three pools that do not
+# share a scaling signal: CPU workers that are mostly idle, a sandbox pool
+# behind a stronger boundary, and GPU inference that is expensive and
+# bursty. Bin-packing agents onto GPU nodes wastes the expensive resource
+# on work that is mostly waiting.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: northstar
+nodes:
+  - role: control-plane
+  - role: worker
+    labels:
+      northstar.dev/pool: agents
+  - role: worker
+    labels:
+      northstar.dev/pool: sandbox
+  - role: worker
+    labels:
+      northstar.dev/pool: inference
+networking:
+  disableDefaultCNI: false
+  podSubnet: 10.244.0.0/16
