@@ -15,7 +15,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import pytest
-from conftest import DELIVERED_ORDER
 from northstar_contracts import Message, ToolCall, World
 from northstar_evals import StateGrader, trajectory
 from northstar_runtime import (
@@ -26,6 +25,8 @@ from northstar_runtime import (
     SimulatedCrash,
     ToolRegistry,
 )
+
+from conftest import DELIVERED_ORDER
 
 REFUND_CENTS = 4200
 

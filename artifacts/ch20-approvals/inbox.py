@@ -31,6 +31,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from fingerprint import ToolVersions, bind, fingerprint
 from northstar_contracts import ToolCall
 from northstar_policy import (
     ApprovalDecision,
@@ -39,8 +40,6 @@ from northstar_policy import (
     ApprovalStore,
     Principal,
 )
-
-from fingerprint import ToolVersions, bind, fingerprint
 from outcomes import RESUME_CHECKS, GuardOutcome, ResumeCheck
 
 __all__ = [

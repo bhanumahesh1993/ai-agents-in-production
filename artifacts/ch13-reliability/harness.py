@@ -10,12 +10,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import metrics
 from northstar_contracts import short_hash
 from northstar_evals import ReliabilityReport
 from northstar_evals import run_repeated as _run_repeated
 from northstar_runtime import AgentLoop, FakeModel, FlakyModel, ToolRegistry
-
-import metrics
 from tasks import Task
 
 

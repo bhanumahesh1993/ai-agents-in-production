@@ -20,9 +20,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from northstar_contracts import ToolCall
-from northstar_policy import Principal
-
 from authz_server import (
     DEFAULT_TTL_SECONDS,
     AuthorizationServer,
@@ -30,6 +27,8 @@ from authz_server import (
     ScopedToken,
     actor_token_subject,
 )
+from northstar_contracts import ToolCall
+from northstar_policy import Principal
 
 __all__ = [
     "AGENT_VERSION",

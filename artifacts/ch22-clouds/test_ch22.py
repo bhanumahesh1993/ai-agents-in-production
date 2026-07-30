@@ -13,15 +13,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import pytest
-
-from northstar_contracts import World
-from northstar_evals import StateGrader
-from northstar_policy import Principal
-from northstar_runtime import Checkpointer
-
 import iac
 import portable
+import pytest
 import scorecard
 from adapters.aws import AgentCore
 from adapters.azure import FoundryAgents
@@ -33,6 +27,10 @@ from adapters.base import (
 )
 from adapters.gcp import AgentPlatform
 from adapters.mock import MockCloud
+from northstar_contracts import World
+from northstar_evals import StateGrader
+from northstar_policy import Principal
+from northstar_runtime import Checkpointer
 from portable import APPROVAL_THRESHOLD_CENTS, INBOUND
 from tasks import TASKS, Task, task_named
 

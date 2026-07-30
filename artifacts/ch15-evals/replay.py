@@ -27,6 +27,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import cases
+from cases import Case, CaseRun, EventSink, build_registry
 from northstar_contracts import (
     EventLog,
     Message,
@@ -35,9 +37,6 @@ from northstar_contracts import (
     World,
 )
 from northstar_runtime import AgentLoop, ModelResponse
-
-import cases
-from cases import Case, CaseRun, EventSink, build_registry
 from sim.world import from_fixture
 
 __all__ = [

@@ -17,6 +17,7 @@ import time
 from dataclasses import dataclass
 from typing import Any
 
+from adapters.base import CloudAdapter
 from northstar_contracts import RunState, ToolCall, World, idempotency_key
 from northstar_evals import GradeResult, StateGrader
 from northstar_policy import (
@@ -25,8 +26,6 @@ from northstar_policy import (
     default_northstar_policy,
 )
 from northstar_runtime import AgentLoop, FakeModel, ToolRegistry
-
-from adapters.base import CloudAdapter
 
 __all__ = [
     "APPROVAL_THRESHOLD_CENTS",

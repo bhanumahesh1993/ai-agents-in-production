@@ -15,12 +15,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import copy
 
-import pytest
-
-from northstar_contracts import World
-from northstar_runtime import MemoryCheckpointer
-
 import manifests
+import pytest
 from agent_builder import (
     APPROVAL_THRESHOLD_CENTS,
     ORDER,
@@ -31,6 +27,8 @@ from controller import ADMISSION_LABEL, AgentController
 from edge.session import SupportSession, hibernate_and_wake
 from edge.storage import LocalStore, StorageCheckpointer
 from manifests import ManifestError
+from northstar_contracts import World
+from northstar_runtime import MemoryCheckpointer
 
 
 def a_document() -> dict:

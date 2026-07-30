@@ -35,15 +35,18 @@ from .models import (
 )
 from .tokens import estimate_tokens
 from .world import (
+    EPOCH,
     FAULT_KINDS,
     REFUND_APPROVAL_THRESHOLD_CENTS,
     Fault,
     World,
+    logical_clock,
 )
 
 __version__ = "1.0.0"
 
 __all__ = [
+    "EPOCH",
     "EVENT_TYPES",
     "FAULT_KINDS",
     "REFUND_APPROVAL_THRESHOLD_CENTS",
@@ -71,5 +74,6 @@ __all__ = [
     "estimate_tokens",
     "event_record",
     "idempotency_key",
+    "logical_clock",
     "short_hash",
 ]

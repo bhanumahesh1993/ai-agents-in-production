@@ -6,8 +6,9 @@ Two things live here.
 ``artifacts/ch12-sandbox/`` and a hyphen is not a valid module name. Putting the
 directory on ``sys.path`` is what makes ``import egress`` resolve the same way
 it does when a reader runs ``python artifacts/ch12-sandbox/demo.py``. Sibling
-chapters that share a module basename are handled by the repository-root
-conftest, not here.
+chapters that share a module basename never share an interpreter with this
+one: each chapter's suite runs in its own process, driven from
+``tests/test_chapter_suites.py``.
 
 **The fixtures.** Every egress assertion runs against a *reachable* stub rather
 than against the real metadata address. Probing ``169.254.169.254`` from a

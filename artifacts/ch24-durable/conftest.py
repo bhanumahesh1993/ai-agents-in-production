@@ -29,7 +29,6 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import pytest  # noqa: E402
-
 from northstar_contracts import World  # noqa: E402
 
 

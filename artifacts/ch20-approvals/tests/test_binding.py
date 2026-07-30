@@ -14,12 +14,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dataclasses import replace
 
 import pytest
-
-from northstar_contracts import ToolCall
-from northstar_policy import Principal
-
 from fingerprint import ToolVersions, fingerprint
 from inbox import ResumeState, TaskInbox
+from northstar_contracts import ToolCall
+from northstar_policy import Principal
 from run import AMOUNT, ORDER, PRINCIPAL, RUN_ID, TOOL_VERSION, refund_call
 
 OTHER_RUN = "run_ch20_someone_else"

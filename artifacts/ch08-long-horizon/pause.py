@@ -174,7 +174,12 @@ class Workflow:
 
     # --------------------------------------------------------- the dispatch
 
-    def dispatch(self, envelope: Envelope, call: ToolCall) -> Envelope:
+    def dispatch(
+        self,
+        envelope: Envelope,
+        call: ToolCall,
+        key: str | None = None,
+    ) -> Envelope:
         """Journal the intent, make the call, journal the outcome.
 
         The two journal writes are the whole resume story, and the gap
@@ -186,10 +191,19 @@ class Workflow:
         would have recorded it is not flushed before the call -- which is
         the window the chapter says a generated key introduces, expressed
         as a keyword argument.
+
+        Args:
+            key: The key this attempt presents. Supplied by
+                :func:`resume.resume`, which computed it already and must
+                not be handed a second, different one. Omitted on the first
+                pass, where this method derives it.
         """
         step_id = envelope.state.step
         derived = self.config.key_strategy == "derived"
-        key = key_for(envelope.state.run_id, step_id, self.config.key_strategy)
+        if key is None:
+            key = key_for(
+                envelope.state.run_id, step_id, self.config.key_strategy
+            )
 
         self.ledger.record_intent(
             key=key,
@@ -221,6 +235,16 @@ class Workflow:
         envelope.pending_call = None
         self.store.save(envelope)
         return envelope
+
+    def present(self, call: ToolCall, key: str) -> dict[str, Any]:
+        """Present one call to the system that owns its effect, under ``key``.
+
+        A resume replays the step before the pause, so it presents that
+        intent a second time. With a derived key the target recognises it
+        and nothing happens twice. With a nonce it is a new intent, and the
+        customer reads the same notice on Monday that they read on Friday.
+        """
+        return self._perform(call, key)
 
     def _perform(self, call: ToolCall, key: str) -> dict[str, Any]:
         """Route one call to the system that actually owns the effect."""

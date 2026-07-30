@@ -56,7 +56,9 @@ where = ["packages"]
 "*" = ["py.typed"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "artifacts"]
+# Chapters are not collected here: they share module basenames the book
+# prints, so they run one process each via tests/test_chapter_suites.py.
+testpaths = ["tests"]
 addopts = "-q"
 filterwarnings = ["error"]
 
@@ -74,6 +76,12 @@ ignore = ["B008", "UP042"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
+# A chapter directory is not a package -- the book prints
+# `artifacts/ch04-patterns/`, and a hyphen is not a module name -- so its
+# conftest must put itself on sys.path before it can import a sibling by the
+# plain name the chapter prints. That ordering is the point, so the imports
+# below it are deliberately not at the top of the file.
+"artifacts/*/conftest.py" = ["E402"]
 
 [tool.mypy]
 python_version = "3.11"

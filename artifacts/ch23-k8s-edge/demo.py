@@ -35,9 +35,8 @@ import json
 import manifests
 from agent_builder import ORDER, REFUND_CENTS, build_support_agent
 from controller import ADMISSION_LABEL, AgentController
-from edge.session import SupportSession, hibernate_and_wake
+from edge.session import hibernate_and_wake
 from edge.storage import LocalStore
-from manifests import ManifestError
 from northstar_contracts import World
 from northstar_runtime import MemoryCheckpointer
 
@@ -162,7 +161,7 @@ def kubernetes_path(failures: list[str]) -> World:
     print(f"  status     : {state.status}")
     print(f"  ledger     : {len(world.refunds_for(ORDER))} row(s), "
           f"{world.total_refunded_cents(ORDER)} cents")
-    print(f"  builder    : build_support_agent")
+    print("  builder    : build_support_agent")
 
     if world.total_refunded_cents(ORDER) != REFUND_CENTS:
         failures.append("the worker path left the wrong ledger")
@@ -183,9 +182,9 @@ def edge_path(failures: list[str]) -> World:
                   f"refunds={snap['refund_rows']} "
                   f"cents={snap['refunded_cents']}")
         print(f"  storage keys        : {snapshots[-1]['storage_keys']}")
-        print(f"  hibernation cost    : 0 (no worker, no connection, no "
-              f"lease)")
-        print(f"  builder             : build_support_agent")
+        print("  hibernation cost    : 0 (no worker, no connection, no "
+              "lease)")
+        print("  builder             : build_support_agent")
 
         if snapshots[0]["refund_rows"] != 1:
             failures.append("the refund did not commit before hibernation")

@@ -27,6 +27,34 @@ is refunded twice, and the run reports `succeeded` with a clean trace. Then it
 reruns the same trajectory with a derived idempotency key and shows a single
 refund in the ledger. If you read nothing else, read that diff.
 
+## Running the tests
+
+`pytest -q` at the root runs everything: the shared packages directly, and each
+chapter's suite in its own interpreter. A chapter runs in a separate process
+because the chapters deliberately share the module names the book prints —
+`router.py` in Chapters 4 and 25, `budget.py` in three chapters, `demo.py` in
+all of them, and Chapter 15's `detectors.py` against Chapter 16's `detectors/`
+package. Collected into one interpreter, `import router` would mean whichever
+chapter imported first. `tests/test_chapter_suites.py` is the driver and records
+why the alternatives were abandoned.
+
+To run a single chapter — the normal way to read one:
+
+```bash
+pytest -q artifacts/ch04-patterns
+python artifacts/ch04-patterns/demo.py
+```
+
+**The world's clock is logical, not wall-clock.** `World()` with no argument
+stamps timestamps from a monotonic counter starting at `EPOCH`, so two runs
+serialise byte for byte. This is not a testing convenience: every timestamp the
+world writes ends up in a tool result, and a tool result ends up in the model's
+context, so a wall clock changes the *length* of the prompt and therefore the
+token count, the budget decision that reads it, and the cache hit rate of
+anything with a live timestamp in its prefix. Pass `clock=time.time` when you
+want real timestamps and accept that runs stop being comparable.
+`tests/test_determinism.py` is the guard.
+
 ## The running example
 
 **Northstar Returns** is a fictional mid-size online retailer. Its support agent

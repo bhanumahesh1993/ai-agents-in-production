@@ -15,6 +15,11 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Any
 
+from budget import BudgetGuard
+from classes import northstar_policy_bundle
+from fingerprint import ToolVersions
+from guard import Guard
+from inbox import TaskInbox
 from northstar_contracts import (
     Message,
     RunState,
@@ -30,12 +35,6 @@ from northstar_runtime import (
     SqliteCheckpointer,
     ToolRegistry,
 )
-
-from budget import BudgetGuard
-from classes import northstar_policy_bundle
-from fingerprint import ToolVersions
-from guard import Guard
-from inbox import TaskInbox
 
 __all__ = [
     "AMOUNT",

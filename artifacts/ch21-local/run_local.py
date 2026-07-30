@@ -12,12 +12,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from northstar_contracts import EventLog, RunState, World
-from northstar_runtime import AgentLoop, MemoryCheckpointer, ModelProvider
-
 import faults
 from mcp_server import SUPPORT_PRINCIPAL, MCPServer, registry_for
-from model_mode import load_script, model_for_mode, mode_from_env
+from model_mode import load_script, mode_from_env, model_for_mode
+from northstar_contracts import EventLog, RunState, World
+from northstar_runtime import AgentLoop, MemoryCheckpointer, ModelProvider
 
 __all__ = [
     "AMOUNT",

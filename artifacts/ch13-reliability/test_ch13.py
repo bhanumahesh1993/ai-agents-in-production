@@ -13,13 +13,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from northstar_contracts import Message, ToolCall
-
 import harness
 import metrics
 from compare import compare_versions
 from error_budget import ErrorBudget
-from tasks import CRITICAL_SET, Plan, by_bucket, by_id
+from northstar_contracts import Message, ToolCall
+from tasks import CRITICAL_SET, by_bucket, by_id
 
 N = 10
 SEED = 1729

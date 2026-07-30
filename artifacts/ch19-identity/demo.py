@@ -18,12 +18,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from dataclasses import replace
 
-from northstar_contracts import ToolCall
-from northstar_policy import Decision, Principal
-
 from authz_server import AudienceMismatch, AuthorizationServer
 from broker import TOOL_AUTHORITY
 from claims import describe, missing_claims
+from northstar_contracts import ToolCall
+from northstar_policy import Decision, Principal
 from policy import APPROVAL_THRESHOLD_CENTS, gateway_policy
 from run_refund import (
     AMOUNT,

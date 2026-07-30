@@ -25,12 +25,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from northstar_evals import pass_k, wilson_interval
-
 import cases
 import replay as replay_tier
 from cases import CASES, Case
 from detectors import run_detectors
+from northstar_evals import pass_k, wilson_interval
 
 __all__ = [
     "GATE_FILE",

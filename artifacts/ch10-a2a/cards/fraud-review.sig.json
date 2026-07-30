@@ -1,0 +1,5 @@
+{
+  "comment": "Detached signature over the canonical JSON of the card body. A real deployment uses a JWS with an asymmetric key; this artifact uses an HMAC stand-in so nothing here needs a crypto library. The property demonstrated is the same: change one byte of the body and the signature stops verifying.",
+  "alg": "HS256-demo",
+  "signature": "705e2203b7fde26b3462d817acb35f67202364a01f9bacdc1c7bc8bf3cc33338"
+}

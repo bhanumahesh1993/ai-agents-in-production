@@ -1,0 +1,48 @@
+# An OTLP-compatible backend on your own machine, for when you want to look at
+# the trace tree in a UI rather than on the console.
+#
+#     docker compose -f artifacts/ch17-observability/compose.yaml up -d
+#     export NORTHSTAR_OTEL_EXPORTER=otlp
+#     export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+#     pip install -e ".[otel]"
+#     python artifacts/ch17-observability/demo.py
+#
+# This is the only part of the chapter that needs a network, and it needs one
+# only to pull two images. The demo's default exporter is `console`, which needs
+# nothing installed and nothing running, so every number the chapter prints is
+# reproducible offline. Bringing this up changes where the spans go and changes
+# nothing about what they contain -- which is the point of emitting to a
+# convention rather than to a vendor.
+#
+# Arize Phoenix is used here because it is one container and it self-hosts with
+# SQLite for local work. Langfuse is the other self-hostable option the chapter
+# names; swapping it in is an exporter endpoint and a Compose service, and no
+# change to any Python file in this directory. Pin these tags before you rely on
+# them: see VERSIONS.md for what this edition was tested against.
+
+services:
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP over gRPC
+      - "4318:4318"   # OTLP over HTTP
+    depends_on:
+      - phoenix
+
+  phoenix:
+    image: arizephoenix/phoenix:version-7.9.0
+    environment:
+      # SQLite is right for a laptop. Point PHOENIX_SQL_DATABASE_URL at
+      # Postgres for anything shared, and read the retention docs before you
+      # send it a payload you would not want kept.
+      PHOENIX_WORKING_DIR: /mnt/data
+    volumes:
+      - phoenix-data:/mnt/data
+    ports:
+      - "6006:6006"   # UI, and its own OTLP/HTTP receiver
+
+volumes:
+  phoenix-data:

@@ -20,10 +20,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import modes as modes_module
 from northstar_contracts import RunState, ToolCall, World, idempotency_key
 from northstar_runtime import AgentLoop, FakeModel, ToolRegistry
-
-import modes as modes_module
 
 __all__ = [
     "ANNOTATORS",

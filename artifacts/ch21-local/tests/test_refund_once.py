@@ -15,10 +15,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from mcp_server import SUPPORT_PRINCIPAL, registry_for
 from northstar_contracts import ToolCall, World, idempotency_key
 from northstar_runtime import AgentLoop, FakeModel
-
-from mcp_server import SUPPORT_PRINCIPAL, registry_for
 
 ORDER = "NR-2026-0041827"
 RUN_ID = "run_ch21_local"

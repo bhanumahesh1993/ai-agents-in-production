@@ -14,12 +14,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from datetime import date
 
-import pytest
-
-from northstar_contracts import ToolCall, World
-
 import cassettes
 import faults
+import pytest
 import stack
 from local_model import PROMOTION_CHECKS, local_provider, unmet
 from mcp_server import (
@@ -31,6 +28,7 @@ from mcp_server import (
     serve_stdio,
 )
 from model_mode import MODES, load_cassette, load_script, mode_from_env
+from northstar_contracts import ToolCall, World
 from run_local import AMOUNT, ORDER, run_task
 
 SCRIPT_DIR = Path(__file__).resolve().parent / "scripts"
@@ -293,7 +291,7 @@ def test_a_clean_run_needs_no_retry() -> None:
 
 def test_a_promotion_check_nobody_ran_does_not_count_as_passing() -> None:
     assert unmet({}) == list(PROMOTION_CHECKS)
-    assert len(unmet({c: True for c in PROMOTION_CHECKS})) == 0
+    assert len(unmet(dict.fromkeys(PROMOTION_CHECKS, True))) == 0
 
 
 def test_local_inference_never_falls_back_to_a_hosted_endpoint() -> None:

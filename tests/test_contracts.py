@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-from conftest import DAMAGED_ORDER, DELIVERED_ORDER, FLAGGED_ORDER
 from northstar_contracts import (
     EventLog,
     Message,
@@ -17,6 +16,8 @@ from northstar_contracts import (
     idempotency_key,
 )
 from northstar_contracts.errors import RetryableToolError, ToolValidationError
+
+from conftest import DAMAGED_ORDER, DELIVERED_ORDER, FLAGGED_ORDER
 
 
 def test_idempotency_key_is_stable_and_32_hex_chars() -> None:

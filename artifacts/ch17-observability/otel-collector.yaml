@@ -1,0 +1,121 @@
+# Tail sampling for agent traces.
+#
+# Uniform head sampling at ten percent keeps a random tenth of your traces,
+# which means it keeps a random tenth of your incidents. Agent trace volume is
+# small compared with web request volume, and the runs you will need are
+# precisely the unusual ones, so sample on the properties that predict
+# investigation instead.
+#
+# Tail sampling costs the buffering below: the collector holds a trace until it
+# has seen enough of it to decide. `decision_wait` therefore has to exceed your
+# p99 run duration, and a long-horizon run that waits on a human will exceed any
+# value you pick -- which is another reason the event log, and not the trace, is
+# the system of record for whether a refund happened.
+#
+# Nothing in the Chapter 17 artifact needs this file to run. It is here because
+# the sampling policy is a design decision that belongs in review, and a policy
+# nobody can read is a policy nobody reviewed.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Redaction has already happened in-process, before the exporter. Dropping
+  # here would be too late: the payload has crossed a network hop, and a
+  # collector misconfiguration then becomes a disclosure. This processor is a
+  # second line, not the line.
+  attributes/scrub:
+    actions:
+      - key: northstar.tool.arguments.body
+        action: delete
+      - key: northstar.tool.arguments.email
+        action: delete
+      - key: gen_ai.prompt
+        action: delete
+      - key: gen_ai.completion
+        action: delete
+
+  tail_sampling:
+    decision_wait: 30s
+    num_traces: 100000
+    expected_new_traces_per_sec: 50
+    policies:
+      # Keep every run that changed the world. A dropped trace on a read-only
+      # run is a nuisance; a dropped trace on a run that moved money is a gap
+      # in the audit record.
+      - name: wrote-to-the-world
+        type: boolean_attribute
+        boolean_attribute:
+          key: northstar.tool.writes
+          value: true
+
+      # Keep every run a human was asked about, whichever way they answered.
+      - name: reached-a-human
+        type: string_attribute
+        string_attribute:
+          key: northstar.policy.decision
+          values: [require_approval, deny]
+
+      # Keep every run that did not finish cleanly.
+      - name: did-not-succeed
+        type: string_attribute
+        string_attribute:
+          key: northstar.status
+          values: [failed, cancelled, waiting_approval]
+
+      # Keep every run that died near its ceiling. Runs that fail at
+      # exhaustion fail differently from runs that fail at turn two.
+      - name: budget-nearly-gone
+        type: numeric_attribute
+        numeric_attribute:
+          key: northstar.budget.remaining_cents
+          min_value: 0
+          max_value: 5
+
+      # Keep anything a grader flagged.
+      - name: grader-flagged
+        type: boolean_attribute
+        boolean_attribute:
+          key: northstar.grader.flagged
+          value: true
+
+      # Keep every trace for a tenant under investigation. The list is
+      # config, so opening an investigation is a collector reload rather than
+      # a deploy.
+      - name: tenant-under-investigation
+        type: string_attribute
+        string_attribute:
+          key: northstar.tenant.id
+          values: []
+          enabled_regex_matching: false
+
+      # And sample the rest, which is the volume: successful read-only runs.
+      - name: everything-else
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 10
+
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+exporters:
+  # Fan out during a migration: two backends receive the same spans, and
+  # nothing in the agent changes. This is what keeps the backend a decision you
+  # can reverse.
+  otlphttp/phoenix:
+    endpoint: http://phoenix:6006
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [attributes/scrub, tail_sampling, batch]
+      exporters: [otlphttp/phoenix, debug]

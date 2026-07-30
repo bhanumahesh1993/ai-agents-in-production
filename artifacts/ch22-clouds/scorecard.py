@@ -23,10 +23,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from adapters.base import ADAPTER_METHODS, CloudAdapter, extra_methods
 from northstar_evals import pass_k
 from northstar_telemetry import CostLedger
-
-from adapters.base import ADAPTER_METHODS, CloudAdapter, extra_methods
 from portable import Attempt, run_once
 from tasks import TASKS, Task
 

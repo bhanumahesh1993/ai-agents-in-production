@@ -15,8 +15,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from northstar_runtime import FakeModel
-
 import report as reporting
 from adapter import (
     COMPLIANCE,
@@ -26,6 +24,7 @@ from adapter import (
     world_from_fixtures,
 )
 from contamination import check_tasks
+from northstar_runtime import FakeModel
 from task import (
     BenchmarkTask,
     dual_control,

@@ -16,7 +16,6 @@ from dataclasses import dataclass
 from typing import Any
 
 from northstar_evals import StateGrader
-
 from portable import refund_script
 
 __all__ = ["TASKS", "Task", "task_named"]

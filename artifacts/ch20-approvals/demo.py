@@ -24,8 +24,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import tempfile
 
-from northstar_policy import BudgetExceeded
-
 from classes import (
     ACTION_CLASSES,
     APPROVAL_THRESHOLD_CENTS,
@@ -34,6 +32,7 @@ from classes import (
 )
 from containment import ContainmentLog, Tripwire, friction_decreases, untested
 from fingerprint import fingerprint
+from northstar_policy import BudgetExceeded
 from payload import render
 from run import (
     AMOUNT,

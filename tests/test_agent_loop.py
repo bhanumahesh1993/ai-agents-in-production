@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-from conftest import DAMAGED_ORDER, DELIVERED_ORDER, refund_script
 from northstar_contracts import ToolCall, World
 from northstar_policy import BudgetExceeded, TurnLimitExceeded
 from northstar_runtime import (
@@ -18,6 +17,8 @@ from northstar_runtime import (
     truncate_to_budget,
 )
 from northstar_runtime.providers import ModelResponse
+
+from conftest import DAMAGED_ORDER, DELIVERED_ORDER, refund_script
 
 
 def test_happy_path_reaches_the_right_world_state(world: World) -> None:

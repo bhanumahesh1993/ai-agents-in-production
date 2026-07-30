@@ -120,7 +120,7 @@ class DurableApprovals:
         self._db.row_factory = sqlite3.Row
         self._db.executescript(_SCHEMA)
         self._db.commit()
-        self._clock = clock or _ticks()
+        self._clock = clock or _ticks(self._last_recorded())
 
     def request(
         self,
@@ -145,7 +145,11 @@ class DurableApprovals:
         if existing is not None and not existing.is_expired(now):
             return existing
 
-        request_id = f"apr-{run_id[-6:]}-{step_id:03d}"
+        # The fingerprint is part of the id, not just of the row. A
+        # re-request after a call changed has to be a *different* request,
+        # or the decision row still keyed to the old id attaches itself to
+        # the new question and a stale approval silently applies.
+        request_id = f"apr-{run_id[-6:]}-{step_id:03d}-{fingerprint[:8]}"
         self._db.execute(
             "INSERT OR REPLACE INTO approval_requests (id, run_id, step_id, "
             " fingerprint, tool, arguments, reason, requested_at, "
@@ -206,10 +210,14 @@ class DurableApprovals:
         return decided
 
     def pending(self, run_id: str) -> PendingApproval | None:
-        """The newest request for a run, decided or not."""
+        """The newest request for a run, decided or not.
+
+        Ties on ``requested_at`` are broken by id so that two processes
+        writing in the same tick still produce one deterministic answer.
+        """
         row = self._db.execute(
             "SELECT * FROM approval_requests WHERE run_id = ? "
-            "ORDER BY requested_at DESC LIMIT 1",
+            "ORDER BY requested_at DESC, id DESC LIMIT 1",
             (run_id,),
         ).fetchone()
         return self._with_decision(row) if row else None
@@ -257,18 +265,34 @@ class DurableApprovals:
     def _by_fingerprint(self, fingerprint: str) -> PendingApproval | None:
         row = self._db.execute(
             "SELECT * FROM approval_requests WHERE fingerprint = ? "
-            "ORDER BY requested_at DESC LIMIT 1",
+            "ORDER BY requested_at DESC, id DESC LIMIT 1",
             (fingerprint,),
         ).fetchone()
         return self._with_decision(row) if row else None
 
+    def _last_recorded(self) -> float:
+        """The latest timestamp already in the file.
 
-def _ticks() -> Any:
+        A counter that restarts with the process is exactly wrong for a
+        store built to outlive it: the second worker would stamp its
+        request earlier than the first worker's, and "the newest request"
+        would stop meaning anything. Seeding from the file makes the clock
+        as durable as the rows it stamps.
+        """
+        row = self._db.execute(
+            "SELECT MAX(t) AS t FROM ("
+            "  SELECT MAX(requested_at) AS t FROM approval_requests"
+            "  UNION ALL SELECT MAX(decided_at) FROM approval_decisions)"
+        ).fetchone()
+        return float(row["t"] or 1000.0)
+
+
+def _ticks(start: float = 1000.0) -> Any:
     """A deterministic clock that advances one second per call."""
-    counter = {"n": 1000}
+    counter = {"n": float(start)}
 
     def clock() -> float:
-        counter["n"] += 1
-        return float(counter["n"])
+        counter["n"] += 1.0
+        return counter["n"]
 
     return clock

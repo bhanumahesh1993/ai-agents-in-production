@@ -1,0 +1,27 @@
+{
+  "name": "northstar-fraud-review",
+  "description": "Assesses refund claims flagged for fraud review.",
+  "version": "1.8.0",
+  "supportedInterfaces": [
+    {
+      "url": "https://fraud-review.internal.example/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true
+  },
+  "securitySchemes": {
+    "oauth2": {"scopes": ["fraud.review.submit"]}
+  },
+  "skills": [
+    {
+      "id": "assess_claim",
+      "description": "Assess one refund claim for fraud risk.",
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json"]
+    }
+  ]
+}

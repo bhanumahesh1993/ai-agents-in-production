@@ -1,0 +1,14 @@
+{
+  "comment": "Deployed configuration, not a runtime fetch. Every value here was fixed by a security review: the url the peer is called at, the key its card is signed with, the hash of the exact card body that review approved, and the A2A versions this client has been tested against. Changing the card without changing this file is drift, and drift fails the build.",
+  "peers": {
+    "northstar-fraud-review": {
+      "url": "https://fraud-review.internal.example/a2a",
+      "public_key": "ch10-mock-card-signing-key-not-a-secret",
+      "card_hash": "05e107b259d0205cbb14752501399fb8b8722a69478b575177d09271a9c7fce6",
+      "reviewed_on": "2026-03-18",
+      "reviewed_by": "northstar-security",
+      "required_scope": "fraud.review.submit",
+      "skill": "assess_claim"
+    }
+  }
+}

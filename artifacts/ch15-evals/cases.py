@@ -19,6 +19,9 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+from graders.judge import AccuracyJudge
+from graders.state import RefundStateGrader
+from graders.trajectory import RefundPathGrader
 from northstar_contracts import (
     EventLog,
     RunState,
@@ -29,10 +32,6 @@ from northstar_contracts import (
     short_hash,
 )
 from northstar_runtime import AgentLoop, FakeModel, FlakyModel, ToolRegistry
-
-from graders.judge import AccuracyJudge
-from graders.state import RefundStateGrader
-from graders.trajectory import RefundPathGrader
 from sim.personas import PERSONAS, SimulatedUser
 from sim.world import from_fixture
 

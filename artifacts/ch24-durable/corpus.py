@@ -24,7 +24,6 @@ from northstar_runtime import (
     MemoryJournal,
     ReplayDivergence,
 )
-
 from workflow import RunContext, Suspended, refund_workflow
 
 __all__ = [

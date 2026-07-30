@@ -20,6 +20,10 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
+from budget import BudgetGuard
+from classes import POLICY_VERSION, class_for
+from fingerprint import ToolVersions, fingerprint
+from inbox import ResumeState, TaskInbox
 from northstar_contracts import (
     RunState,
     ToolCall,
@@ -30,11 +34,6 @@ from northstar_contracts import (
 )
 from northstar_policy import Decision, PolicyEngine, PolicyVerdict, Principal
 from northstar_runtime import PolicyDenied, ToolRegistry
-
-from budget import BudgetGuard
-from classes import POLICY_VERSION, class_for
-from fingerprint import ToolVersions, fingerprint
-from inbox import ResumeState, TaskInbox
 from outcomes import GuardOutcome
 from payload import approval_payload
 

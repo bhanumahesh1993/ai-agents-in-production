@@ -11,9 +11,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-from northstar_contracts import World, canonical_json
-
 from catalog import FailureLabel
+from northstar_contracts import World, canonical_json
 
 __all__ = ["TOOL_SPECS", "canonical", "detect_step_repetition"]
 

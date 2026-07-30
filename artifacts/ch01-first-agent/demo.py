@@ -16,12 +16,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import sys
 
-from northstar_contracts import ToolCall, World
-from northstar_runtime import FakeModel
-
 import tools_broken
 import tools_repaired
 from loop import MinimalAgent
+from northstar_contracts import ToolCall, World
+from northstar_runtime import FakeModel
 
 # A partial refund on the larger order. This matters: a full refund would hit
 # the world's own over-refund guard, and the guard -- not the idempotency key --

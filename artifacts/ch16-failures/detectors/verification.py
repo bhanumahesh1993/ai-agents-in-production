@@ -14,9 +14,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any
 
-from northstar_contracts import RunState
-
 from catalog import FailureLabel
+from northstar_contracts import RunState
 
 __all__ = ["READ_BACK_TOOLS", "WRITE_TOOLS", "detect_unverified_write"]
 

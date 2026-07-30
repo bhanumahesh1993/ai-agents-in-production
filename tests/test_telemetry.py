@@ -5,7 +5,6 @@ from __future__ import annotations
 import io
 
 import pytest
-from conftest import DAMAGED_ORDER, refund_script
 from northstar_contracts import ToolCall, World
 from northstar_runtime import AgentLoop, FakeModel
 from northstar_telemetry import (
@@ -14,6 +13,8 @@ from northstar_telemetry import (
     Redactor,
     instrument,
 )
+
+from conftest import DAMAGED_ORDER, refund_script
 
 
 def _run(world: World, exporter: str = "memory", **kwargs: object):

@@ -14,10 +14,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import pytest
-
-from northstar_contracts import RunState, ToolCall, World
-from northstar_policy import BudgetExceeded, Decision
-
 from budget import BudgetGuard
 from classes import (
     APPROVAL_THRESHOLD_CENTS,
@@ -27,6 +23,8 @@ from classes import (
 )
 from containment import ContainmentLog, Tripwire, friction_decreases, untested
 from guard import PolicyDenied, PolicyUnavailable
+from northstar_contracts import RunState, ToolCall, World
+from northstar_policy import BudgetExceeded, Decision
 from payload import approval_payload, preview_refund, render
 from run import (
     AMOUNT,

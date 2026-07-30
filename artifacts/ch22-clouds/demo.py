@@ -81,7 +81,6 @@ def undefined_cost(failures: list[str]) -> None:
     # One task, graded so that nothing can pass: the point is the reported
     # field, not the fixture.
     from northstar_evals import StateGrader
-
     from tasks import Task
 
     impossible = Task(

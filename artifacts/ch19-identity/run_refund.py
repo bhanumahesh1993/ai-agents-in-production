@@ -11,6 +11,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from authz_server import AuthorizationServer
+from broker import TokenBroker
+from gateway import DecisionLog, TokenBoundTools, ToolGateway
 from northstar_contracts import (
     EventLog,
     Message,
@@ -22,10 +25,6 @@ from northstar_contracts import (
 )
 from northstar_policy import Principal
 from northstar_runtime import AgentLoop, FakeModel, ToolRegistry
-
-from authz_server import AuthorizationServer
-from broker import TokenBroker
-from gateway import DecisionLog, TokenBoundTools, ToolGateway
 from policy import gateway_policy
 
 __all__ = [

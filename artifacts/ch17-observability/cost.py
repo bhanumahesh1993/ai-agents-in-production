@@ -33,18 +33,21 @@ replay. That matters because Chapter 24's durable runner will replay steps.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from northstar_contracts import Money
 from northstar_telemetry import ModelPrice
 
 __all__ = [
+    "DEFAULT_PRICE",
+    "NANOCENTS",
     "NORTHSTAR_PRICES",
     "PRICING_VERSION",
     "CostEvent",
     "CostLedger",
     "Price",
+    "cached_split",
 ]
 
 NANOCENTS = 1_000_000_000
@@ -286,17 +289,43 @@ class CostLedger:
         """
         return self.roots.get(event.run_id, event.root_run_id)
 
-    def per_run_cents(self, run_id: str | None = None) -> Money:
-        """Cents for one root run and everything under it."""
-        return _to_cents(sum(
+    def per_run_nanocents(self, run_id: str | None = None) -> int:
+        """Exact nanocents for one root run and everything under it.
+
+        The unrounded figure, because rounding up to whole cents at every
+        query is how a dashboard and a monthly bill end up four percent
+        apart. Roll up in nanocents; round once, at the edge.
+        """
+        return sum(
             e.nanocents
             for e in self._events.values()
             if run_id is None or self._root_of(e) == run_id
-        ))
+        )
+
+    def per_run_exact_cents(self, run_id: str | None = None) -> float:
+        """The same figure as a fractional cent, for a legible table.
+
+        Mock-mode runs cost a fraction of a cent, so a table of whole cents
+        reads as a column of ones and hides every difference the demo is
+        about. This is a display concern only; nothing bills from it.
+        """
+        return self.per_run_nanocents(run_id) / NANOCENTS
+
+    def per_run_cents(self, run_id: str | None = None) -> Money:
+        """Cents for one root run and everything under it, rounded up."""
+        return _to_cents(self.per_run_nanocents(run_id))
 
     def total_cents(self) -> Money:
         """Cents across everything recorded."""
         return self.per_run_cents(None)
+
+    def unattributed_nanocents(self, roots: set[str]) -> int:
+        """Exact spend that rolls up to no run in ``roots``."""
+        return sum(
+            e.nanocents
+            for e in self._events.values()
+            if self._root_of(e) not in roots
+        )
 
     def unattributed_cents(self, roots: set[str]) -> Money:
         """Spend that rolls up to no run in ``roots``.
@@ -304,11 +333,14 @@ class CostLedger:
         This is Northstar's April failure as a number. The total is
         unchanged; the share of it nobody can attribute is the finding.
         """
-        return _to_cents(sum(
-            e.nanocents
-            for e in self._events.values()
-            if self._root_of(e) not in roots
-        ))
+        return _to_cents(self.unattributed_nanocents(roots))
+
+    def unattributed_share(self, roots: set[str]) -> float:
+        """The fraction of total spend with no owner. Zero is the target."""
+        total = self.per_run_nanocents(None)
+        if total == 0:
+            return 0.0
+        return self.unattributed_nanocents(roots) / total
 
     def tokens(self, run_id: str | None = None) -> dict[str, int]:
         """Prompt, cached, and completion totals."""
@@ -344,8 +376,10 @@ class CostLedger:
             Cents per verified success, or ``inf`` when nothing succeeded,
             which is the honest answer rather than a division error.
         """
-        spend = sum(self.per_run_cents(run_id) for run_id in attempted)
-        spend += int(round(human_minutes * minute_cents))
+        nanocents = sum(
+            self.per_run_nanocents(run_id) for run_id in attempted
+        )
+        spend = nanocents / NANOCENTS + human_minutes * minute_cents
         if not succeeded:
             return float("inf")
         return spend / len(succeeded)

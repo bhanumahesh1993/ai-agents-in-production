@@ -20,6 +20,7 @@ of the book removes.
 
 from __future__ import annotations
 
+import itertools
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -34,11 +35,19 @@ from .models import Currency, Money, ToolSpec
 from .tokens import estimate_tokens
 
 __all__ = [
+    "EPOCH",
     "FAULT_KINDS",
     "REFUND_APPROVAL_THRESHOLD_CENTS",
     "Fault",
     "World",
+    "logical_clock",
 ]
+
+#: The logical clock's first tick: 2026-07-01T00:00:00Z, as a whole number of
+#: seconds. Whole seconds on purpose -- a float with a fractional part
+#: serialises to a variable number of characters, which is the defect
+#: :func:`logical_clock` exists to remove.
+EPOCH: float = 1782950400.0
 
 #: Refunds at or below this stay inside the agent's autonomy budget.
 #: Above it, a human decides. The number is a policy input, not a law of
@@ -224,12 +233,49 @@ _SKU_OVERRIDES: dict[str, dict[str, Any]] = {
 }
 
 
+def logical_clock(
+    start: float = EPOCH, step: float = 1.0
+) -> Callable[[], float]:
+    """A monotonic counter standing in for wall time.
+
+    Every timestamp the world stamps -- a refund's ``created_at``, a
+    ledger row's ``ts``, a message's ``sent_at`` -- lands in a tool result,
+    and a tool result lands in the model's context. So a wall clock does
+    not merely make timestamps vary between runs; it changes the *length*
+    of the context, and therefore the token count, the budget decision that
+    reads it, and the trajectory of anything that compacts on a threshold.
+    Chapter 4's cost table caught this: two runs of the same pattern priced
+    two tokens apart, because ``repr(1785407178.020413)`` is one character
+    shorter than ``repr(1785407177.953215)``.
+
+    This is not a testing artefact. A production agent whose prompt carries
+    a live timestamp has a prompt prefix that never repeats, which means its
+    cache hit rate is zero and it pays full price for every turn.
+
+    Args:
+        start: The first value returned. Defaults to :data:`EPOCH`.
+        step: How far the clock advances per read.
+
+    Returns:
+        A zero-argument callable returning the next value.
+    """
+    ticks = itertools.count()
+
+    def tick() -> float:
+        return start + step * next(ticks)
+
+    return tick
+
+
 class World:
     """An in-memory authoritative store with six tools bolted to it.
 
     Args:
-        clock: Injectable time source. Tests pass a counter so timestamps
-            are deterministic and golden trajectories stay stable.
+        clock: Injectable time source. Defaults to :func:`logical_clock`,
+            so a world built with no arguments reproduces byte for byte --
+            which is what the rest of this repository promises. Pass
+            ``clock=time.time`` when you want real timestamps and accept
+            that runs will no longer be comparable.
 
     Attributes:
         orders: Order id to order dict.
@@ -241,7 +287,7 @@ class World:
     """
 
     def __init__(self, clock: Callable[[], float] | None = None) -> None:
-        self._clock: Callable[[], float] = clock or time.time
+        self._clock: Callable[[], float] = clock or logical_clock()
         self.orders: dict[str, dict[str, Any]] = _fixtures()
         self.refunds: list[_Refund] = []
         self.messages: list[dict[str, Any]] = []

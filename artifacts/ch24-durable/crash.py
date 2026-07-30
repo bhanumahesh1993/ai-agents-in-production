@@ -26,7 +26,6 @@ from northstar_runtime import (
     MemoryJournal,
     SimulatedCrash,
 )
-
 from workflow import RunContext, Suspended, refund_workflow
 
 __all__ = [

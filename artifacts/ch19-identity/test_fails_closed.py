@@ -16,10 +16,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import pytest
-
-from northstar_contracts import ToolCall, idempotency_key
-from northstar_policy import Decision, Principal
-
 from authz_server import (
     AudienceMismatch,
     AuthorizationServer,
@@ -28,6 +24,8 @@ from authz_server import (
 )
 from broker import TOOL_AUTHORITY, TokenBroker
 from claims import REQUIRED_CLAIMS, missing_claims
+from northstar_contracts import ToolCall, idempotency_key
+from northstar_policy import Decision, Principal
 from policy import APPROVAL_THRESHOLD_CENTS, gateway_policy, policy
 from run_refund import AMOUNT, ORDER, RUN_ID, USER, refund_call, run_refund
 

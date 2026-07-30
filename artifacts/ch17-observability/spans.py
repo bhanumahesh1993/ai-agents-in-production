@@ -32,14 +32,17 @@ from northstar_policy import Principal
 
 __all__ = [
     "CONVENTION",
+    "IDENTITY_ATTRIBUTES",
     "REQUIRED_ATTRIBUTES",
     "SEMCONV_VERSION",
     "SPAN_NAMES",
+    "TOOL_ATTRIBUTES",
     "RunContext",
     "digest",
     "handoff_span_attributes",
     "missing_required",
     "model_span_attributes",
+    "required_for",
     "run_span_attributes",
     "to_conventions",
     "tool_span_attributes",
@@ -78,18 +81,36 @@ SPAN_NAMES = {
     "handoff": "gen_ai.handoff",
 }
 
-#: The seven attributes without which a trace is close to worthless during an
-#: incident, because the questions being asked are about identity, authority,
-#: and consequence rather than about duration.
-REQUIRED_ATTRIBUTES: tuple[str, ...] = (
+#: Five of the seven. Identity, authority, and pressure, which every span a
+#: human might read during an incident has to carry.
+IDENTITY_ATTRIBUTES: tuple[str, ...] = (
     "northstar.goal.hash",
     "northstar.agent.version",
     "northstar.config.hash",
     "northstar.principal.user",
     "northstar.budget.remaining_cents",
+)
+
+#: The other two. They describe one call's arguments and one call's
+#: consequence, so only a tool span can carry them -- an argument digest on a
+#: model span would be a field with nothing in it, and a required field that
+#: is routinely empty is a required field nobody believes.
+TOOL_ATTRIBUTES: tuple[str, ...] = (
     "northstar.tool.args_digest",
     "northstar.side_effect.id",
 )
+
+#: The seven attributes without which a trace is close to worthless during an
+#: incident, because the questions being asked are about identity, authority,
+#: and consequence rather than about duration.
+REQUIRED_ATTRIBUTES: tuple[str, ...] = IDENTITY_ATTRIBUTES + TOOL_ATTRIBUTES
+
+
+def required_for(span_name: str | None) -> tuple[str, ...]:
+    """Which of the seven a span of this kind is expected to carry."""
+    if span_name == SPAN_NAMES["tool"]:
+        return REQUIRED_ATTRIBUTES
+    return IDENTITY_ATTRIBUTES
 
 
 def digest(value: Any) -> str:
@@ -303,14 +324,25 @@ def handoff_span_attributes(
     })
 
 
-def missing_required(attributes: dict[str, Any]) -> list[str]:
-    """Which of the seven required attributes a span left out.
+def missing_required(
+    attributes: dict[str, Any],
+    span_name: str | None = None,
+) -> list[str]:
+    """Which of the required attributes a span left out.
 
-    Empty strings count as missing for identity fields and as present for
-    ``side_effect.id``, which is legitimately empty on a read.
+    Args:
+        attributes: The span's attributes, after the mapping layer.
+        span_name: Which span this is. Omit it and all seven are demanded,
+            which is the strict reading; pass it and the two call-scoped
+            attributes are only demanded of a tool span.
+
+    Returns:
+        The missing keys. Empty strings count as missing for identity fields
+        and as present for ``side_effect.id``, which is legitimately empty on
+        a read and on any span that is not a call.
     """
     missing: list[str] = []
-    for key in REQUIRED_ATTRIBUTES:
+    for key in required_for(span_name) if span_name else REQUIRED_ATTRIBUTES:
         if key not in attributes:
             missing.append(key)
             continue

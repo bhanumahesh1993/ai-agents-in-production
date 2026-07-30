@@ -28,9 +28,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
+from agent_builder import ORDER, build_support_agent
 from northstar_contracts import RunState, World
 
-from agent_builder import ORDER, build_support_agent
 from edge.storage import LocalStore, StorageCheckpointer
 
 __all__ = ["Hibernated", "SupportSession", "hibernate_and_wake"]

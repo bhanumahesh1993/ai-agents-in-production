@@ -160,7 +160,7 @@ class EnvelopeStore:
         self._db.row_factory = sqlite3.Row
         self._db.executescript(_SCHEMA)
         self._db.commit()
-        self._clock = clock or _monotonic_ticks()
+        self._clock = clock or _monotonic_ticks(self._last_recorded())
 
     # ------------------------------------------------------------- writing
 
@@ -306,6 +306,16 @@ class EnvelopeStore:
         ).fetchall()
         return [str(r["run_id"]) for r in rows]
 
+    def _last_recorded(self) -> float:
+        """The latest transition timestamp already in the file.
+
+        The transition log is read across processes, so a counter that
+        restarts with the process produces a history where Monday's resume
+        is stamped before Friday's pause. Seed it from the file instead.
+        """
+        row = self._db.execute("SELECT MAX(at) AS at FROM transitions").fetchone()
+        return float(row["at"] or 0.0)
+
     def close(self) -> None:
         """Close both handles on the file."""
         self._db.close()
@@ -333,17 +343,17 @@ def _run_status(phase: RunPhase) -> str:
     return phase.value
 
 
-def _monotonic_ticks() -> Any:
-    """A deterministic clock: one tick per call, starting at 1.
+def _monotonic_ticks(start: float = 0.0) -> Any:
+    """A deterministic clock: one tick per call, continuing from ``start``.
 
     Replay must be deterministic, so workflow code reads neither the wall
     clock nor a random source. Both come in as recorded inputs, and this is
     the recorded input.
     """
-    counter = {"n": 0}
+    counter = {"n": float(start)}
 
     def clock() -> float:
-        counter["n"] += 1
-        return float(counter["n"])
+        counter["n"] += 1.0
+        return counter["n"]
 
     return clock

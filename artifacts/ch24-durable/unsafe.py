@@ -26,7 +26,6 @@ from typing import Any
 from uuid import uuid4
 
 from northstar_contracts import idempotency_key
-
 from workflow import RunContext
 
 __all__ = ["broken_values", "compare", "safe_values"]

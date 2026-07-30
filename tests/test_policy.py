@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-from conftest import DAMAGED_ORDER, DELIVERED_ORDER, FLAGGED_ORDER
 from northstar_contracts import ToolCall, World
 from northstar_policy import (
     ApprovalStore,
@@ -18,6 +17,8 @@ from northstar_policy import (
     deny_tool,
 )
 from northstar_runtime import AgentLoop, FakeModel, PolicyDenied
+
+from conftest import DAMAGED_ORDER, DELIVERED_ORDER, FLAGGED_ORDER
 
 AGENT_SCOPES = ("orders:read", "refunds:write")
 

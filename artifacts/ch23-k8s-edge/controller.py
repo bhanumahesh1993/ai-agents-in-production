@@ -23,9 +23,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from northstar_contracts import content_hash
-
 from manifests import AgentSpec, ManifestError, admission_problems
+from northstar_contracts import content_hash
 
 __all__ = [
     "ADMISSION_LABEL",

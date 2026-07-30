@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from conftest import DAMAGED_ORDER, DELIVERED_ORDER, refund_script
 from northstar_contracts import Message, RunState, ToolCall, World
 from northstar_policy import ApprovalStore, Principal, default_northstar_policy
 from northstar_runtime import (
@@ -19,6 +18,8 @@ from northstar_runtime import (
     SimulatedCrash,
     SqliteCheckpointer,
 )
+
+from conftest import DAMAGED_ORDER, DELIVERED_ORDER, refund_script
 
 # ------------------------------------------------------------- checkpointers
 

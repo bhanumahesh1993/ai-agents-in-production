@@ -10,9 +10,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from northstar_contracts import World
-
 from demo import AMOUNT, ORDER, run_broken, run_repaired
+from northstar_contracts import World
 
 
 def test_broken_tool_double_refunds_after_a_timeout() -> None:

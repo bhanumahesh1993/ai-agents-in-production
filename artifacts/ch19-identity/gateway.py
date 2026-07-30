@@ -16,6 +16,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from authz_server import AuthorizationServer, TokenError
+from broker import TOOL_AUTHORITY, TokenBroker
 from northstar_contracts import (
     EventLog,
     ToolCall,
@@ -23,9 +25,6 @@ from northstar_contracts import (
 )
 from northstar_policy import Decision, PolicyEngine, Principal
 from northstar_runtime import ToolRegistry
-
-from authz_server import AuthorizationServer, TokenError
-from broker import TOOL_AUTHORITY, TokenBroker
 
 __all__ = ["DecisionLog", "TokenBoundTools", "ToolGateway"]
 

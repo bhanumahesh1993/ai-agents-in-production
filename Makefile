@@ -68,6 +68,30 @@ demo-ch05:  ## Isolated readers, then two writers who disagree
 demo-ch06:  ## Supervisor versus swarm, and the handoff that pays twice
 	$(BIN)/python artifacts/ch06-topologies/demo.py
 
+.PHONY: demo-ch08
+demo-ch08:  ## A three-day pause, a killed worker, and one refund
+	$(PY_RUN) artifacts/ch08-long-horizon/demo.py $(ARGS)
+
+.PHONY: demo-ch10
+demo-ch10:  ## Two agents on two runtimes, delegating over A2A in mock mode
+	$(PY_RUN) artifacts/ch10-a2a/demo.py $(ARGS)
+
+.PHONY: demo-ch11
+demo-ch11:  ## The tool library, its conformance gate, and the result lint
+	$(PY_RUN) artifacts/ch11-tools/demo.py $(ARGS)
+
+.PHONY: demo-ch17
+demo-ch17:  ## OTel spans, cost per verified success, and a broken trace edge
+	$(PY_RUN) artifacts/ch17-observability/demo.py $(ARGS)
+
+.PHONY: demo-ch18
+demo-ch18:  ## Two indirect injections, scored on what left the boundary
+	$(PY_RUN) artifacts/ch18-redteam/demo.py $(ARGS)
+
+.PHONY: demo-ch24
+demo-ch24:  ## Four injected crashes, one refund, and a resumable stream
+	$(PY_RUN) artifacts/ch24-durable/demo.py $(ARGS)
+
 .PHONY: demo-ch25
 demo-ch25:  ## Budgets, a tenant-scoped cache, and a router priced per success
 	$(PY_RUN) artifacts/ch25-cost/demo.py
