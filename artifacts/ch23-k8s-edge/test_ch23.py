@@ -302,10 +302,18 @@ def test_the_storage_adapter_round_trips_a_run() -> None:
 
 
 def test_both_deployment_shapes_call_the_same_builder() -> None:
-    """The portability claim the chapter makes and this artifact checks."""
+    """The portability claim the chapter makes and this artifact checks.
+
+    Both sides are imported inside the test on purpose. A module-level import
+    binds an object once, at collection; the suite isolates chapters by clearing
+    the import cache between them, so a name bound at collection can outlive the
+    module it came from and the identity check would compare a stale object.
+    Resolving both here compares what the two shells would actually call.
+    """
+    import agent_builder
     import edge.session as edge_session
 
-    assert edge_session.build_support_agent is build_support_agent
+    assert edge_session.build_support_agent is agent_builder.build_support_agent
 
 
 def test_both_deployment_shapes_leave_the_same_world() -> None:

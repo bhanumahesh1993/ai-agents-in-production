@@ -42,24 +42,66 @@ def _artifact_dir_of(path: Path) -> Path | None:
     return (ARTIFACTS / rel.parts[0]) if rel.parts else None
 
 
+def _colliding_basenames() -> frozenset[str]:
+    """Module basenames that exist in more than one artifact directory.
+
+Kept for the record and for tooling, though eviction is deliberately broader
+    than this set: restricting eviction to colliding names left a stale
+    transitive reference, because a uniquely-named module (ch04's pattern table)
+    can itself hold the wrong chapter's ``router``. Any module belonging to
+    another artifact directory is therefore evicted.
+    """
+    # Only top-level modules. A package submodule is reached through its
+    # package, and evicting one leaves the parent holding a stale reference --
+    # which is how ch16's ``detectors.repetition`` stopped resolving. Never
+    # ``__init__`` or ``conftest``, for the same reason.
+    skip = {"__init__", "conftest"}
+    seen: dict[str, int] = {}
+    for d in ARTIFACTS.glob("ch*-*"):
+        if not d.is_dir():
+            continue
+        names = {f.stem for f in d.glob("*.py") if f.stem not in skip}
+        # Packages count too, and by directory name. Counting only ``*.py``
+        # missed the sharpest case in this repository: ch15 has a
+        # ``detectors.py`` module and ch16 a ``detectors/`` package, so
+        # ``import detectors.repetition`` in ch16 resolved to ch15's module and
+        # failed with "detectors is not a package".
+        names |= {sub.parent.name for sub in d.glob("*/__init__.py")}
+        for name in names:
+            seen[name] = seen.get(name, 0) + 1
+    return frozenset(name for name, n in seen.items() if n > 1)
+
+
+_COLLIDING = _colliding_basenames()
+
+
 def _evict_siblings(here: Path) -> None:
-    """Forget modules imported from a *different* artifact directory.
+    """Forget *colliding* modules imported from a different artifact directory.
 
     Each chapter's own ``conftest.py`` already puts its directory on the path,
-    which is enough when that chapter runs alone. It is not enough in a single
-    run over all of ``artifacts/``: once ``router`` is in ``sys.modules`` from
-    ch04, ch25's ``import router`` is satisfied from the cache and never looks
-    at the path at all. Eviction is the part a per-directory conftest cannot do
-    for itself, so it is the only thing done here -- the path is left to those
-    conftests, which know their own chapter's layout.
+    which suffices when that chapter runs alone. It does not suffice in one run
+    over all of ``artifacts/``: once ``router`` is in ``sys.modules`` from ch04,
+    ch25's ``import router`` is served from the cache and never consults the
+    path. Eviction is the part a per-directory conftest cannot do for itself.
     """
     here = here.resolve()
+
+    # Put this chapter first. Each chapter's conftest inserts its own directory,
+    # but those insertions accumulate across a full run, so by the time ch16's
+    # tests execute another chapter can precede it and ``import detectors``
+    # resolves to a namespace package found earlier on the path.
+    if str(here) in sys.path:
+        sys.path.remove(str(here))
+    sys.path.insert(0, str(here))
+
     others = [
         str(d.resolve())
         for d in ARTIFACTS.glob("ch*-*")
         if d.is_dir() and d.resolve() != here
     ]
     for name, mod in list(sys.modules.items()):
+        if name in ("conftest",) or name.endswith(".conftest"):
+            continue
         origin = getattr(mod, "__file__", None)
         if not origin:
             continue

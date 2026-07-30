@@ -27,12 +27,26 @@ from northstar_runtime import Journal, SimulatedCrash
 __all__ = [
     "LAST_EVENT_ID_HEADER",
     "StreamClient",
+    "event_id",
     "sse",
     "stream",
 ]
 
 #: The header a reconnecting client sends. The name is the standard's.
 LAST_EVENT_ID_HEADER = "Last-Event-ID"
+
+
+def event_id(record: dict[str, Any]) -> int:
+    """The event id for one journal record.
+
+    One more than the sequence number, deliberately. Journal sequences
+    start at zero and a client that has seen nothing sends
+    ``Last-Event-ID: 0``, so ids have to start at one or the first event of
+    every run is the one nobody ever receives. This is the sort of
+    off-by-one that shows up as "the first line of the transcript is
+    missing, sometimes".
+    """
+    return int(record["seq"]) + 1
 
 
 def sse(id: int, data: Any, event: str = "message") -> str:
@@ -56,7 +70,7 @@ def since(
     return [
         record
         for record in journal.records(run_id)
-        if int(record["seq"]) > after
+        if event_id(record) > after
     ]
 
 
@@ -89,16 +103,14 @@ def stream(
     """
     sent = 0
     for record in since(journal, run_id, last_event_id):
-        yield sse(int(record["seq"]), record["payload"],
-                  event=record["type"])
+        yield sse(event_id(record), record["payload"], event=record["type"])
         sent += 1
         if crash_after is not None and sent >= crash_after:
             raise SimulatedCrash(
                 f"connection dropped after {sent} event(s) of run {run_id}"
             )
     for record in live or ():          # live tail
-        yield sse(int(record["seq"]), record["payload"],
-                  event=record["type"])
+        yield sse(event_id(record), record["payload"], event=record["type"])
 
 
 @dataclass

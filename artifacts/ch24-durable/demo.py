@@ -175,9 +175,11 @@ def suspension(failures: list[str]) -> None:
         order_id=crash.FLAGGED_ORDER,
         amount_cents=crash.FLAGGED_CENTS,
     )
-    print(f"  outcome            : {parked.outcome}")
+    parked_outcome = parked.outcome
+    rows_while_parked = parked.refund_rows
+    print(f"  outcome            : {parked_outcome}")
     print(f"  journal            : {len(parked.records())} record(s)")
-    print(f"  ledger while parked: {parked.refund_rows} row(s)")
+    print(f"  ledger while parked: {rows_while_parked} row(s)")
     print("  cost while parked  : a row and a timer. No worker, no")
     print("                       container, no connection.")
 
@@ -188,9 +190,9 @@ def suspension(failures: list[str]) -> None:
           f"{resumed.state.status if resumed.state else resumed.outcome}, "
           f"{resumed.refund_rows} refund(s), {resumed.refunded_cents}c")
 
-    if parked.outcome != "suspended":
-        failures.append(f"the run did not suspend; it {parked.outcome}")
-    if parked.refund_rows != 0:
+    if parked_outcome != "suspended":
+        failures.append(f"the run did not suspend; it {parked_outcome}")
+    if rows_while_parked != 0:
         failures.append("money moved before the human decided")
     if resumed.refunded_cents != crash.FLAGGED_CENTS:
         failures.append(
